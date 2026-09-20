@@ -1,3 +1,8 @@
 /teams   /teams.html   200
 
-
+# Project notes and tooling folders live next to the site files but are not part of the site.
+/.claude/*        /404.html  404!
+/.impeccable/*    /404.html  404!
+/DESIGN.md        /404.html  404!
+/PRODUCT.md       /404.html  404!
+/REVIEW-*         /404.html  404!

@@ -12,7 +12,7 @@ const I18N = {
         lockScore:'Lock score', unlockScore:'Unlock to edit', scoreLocked:'Locked — this score is final',
         ackTitle:'Before you start scoring', ackBody:'Please confirm you\'ve read the judging criteria and understand the 1–10 scale for each one.',
         ackCheckbox:'I\'ve read the criteria and understand the scale', ackContinue:'Continue',
-        sessionConflict:'You\'re also signed in on another device with this code — scores may overwrite each other. Close this tab if that wasn\'t you.',
+        sessionConflict:'Also signed in on another device — scores may overwrite each other.',
         ackRulebookLink:'View the full rulebook on the public page →', lockErr:'Could not update lock:', clearSearch:'Clear search', scoredLabel:'scored', searchTeams:'Search teams...',
         walletCriteria:'Criteria', walletTotal:'Statement total', walletPosted:'criteria posted',
         walletWorth:'Worth ', walletOfTotal:'% of this team\'s total', walletLiveJump:'Jump to live', walletScrollHint:'Scroll',
@@ -30,7 +30,7 @@ const I18N = {
         lockScore:'قفل التقييم', unlockScore:'فتح للتعديل', scoreLocked:'مقفل — هذا التقييم نهائي',
         ackTitle:'قبل أن تبدأ التقييم', ackBody:'يرجى تأكيد أنك قرأت معايير التحكيم وتفهم مقياس ١–١٠ لكل منها.',
         ackCheckbox:'قرأت المعايير وأتفهم المقياس', ackContinue:'متابعة',
-        sessionConflict:'أنت مسجّل الدخول أيضاً من جهاز آخر بنفس الرمز — قد تتعارض التقييمات. أغلق هذا التبويب إذا لم يكن أنت.',
+        sessionConflict:'مسجّل الدخول أيضاً من جهاز آخر — قد تتعارض التقييمات.',
         ackRulebookLink:'اطّلع على دليل التقييم الكامل في الصفحة العامة ←', lockErr:'تعذر تحديث القفل:', clearSearch:'مسح البحث', scoredLabel:'تم تقييمها', searchTeams:'ابحث عن فريق...',
         walletCriteria:'المعايير', walletTotal:'إجمالي التقييم', walletPosted:'معيار تم تقييمه',
         walletWorth:'يمثّل ', walletOfTotal:'% من إجمالي هذا الفريق', walletLiveJump:'الانتقال إلى المباشر', walletScrollHint:'مرّر',
@@ -1090,7 +1090,8 @@ function wltFitStack(force){
   wrap.style.zoom = '';
   const top = wrap.getBoundingClientRect().top;
   const need = WLT_STAGE_H + WLT_STACK_TOP_OFFSET + 8;
-  const avail = h - top - 10;
+  const navH = window.matchMedia('(max-width:720px)').matches ? ((document.querySelector('nav') || {}).offsetHeight || 0) : 0;
+  const avail = h - top - 10 - navH;
   const k = Math.max(.66, Math.min(1, avail / need));
   wrap.style.zoom = k < .995 ? k.toFixed(3) : '';
 }
@@ -1373,6 +1374,7 @@ function renderWalletStack(){
   $('wltBackBtn').onclick = () => { if (walletActiveId != null) walletBackToList(); };
   if ($('wltLivePin')) $('wltLivePin').onclick = () => {
     if (wltStackAnimating) return;
+    if (walletActiveId != null) { wltWindowStart = 0; walletBackToList(); return; }
     wltWindowStart = 0;
     wltStackAnimating = true;
     wltLayoutStack(list);
@@ -1459,6 +1461,7 @@ function openWalletTeam(id){
   if ($('wltDetailHead')) $('wltDetailHead').classList.add('wlt-show');
 
   $('teamDetailWrap').classList.remove('hide');
+  $('teamDetailWrap').style.setProperty('--tc', teamColor(currentTeam));
   $('teamDetailWrap').innerHTML = `<div class="wlt-detail-extra" id="wltDetailExtra"></div>`;
   renderWalletStatement();
   // The double-rAF is just there so the CSS transition actually plays (the element
@@ -2187,3 +2190,9 @@ function renderEnvNotice(){
   if (inst) inst.onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch (e) {} deferredInstall = null; renderEnvNotice(); };
 }
 renderEnvNotice();
+
+(function trackHeaderHeight(){
+  const h = document.querySelector('header'); if (!h) return;
+  const set = () => document.documentElement.style.setProperty('--hdr-h', h.offsetHeight + 'px');
+  set(); if (window.ResizeObserver) new ResizeObserver(set).observe(h);
+})();
