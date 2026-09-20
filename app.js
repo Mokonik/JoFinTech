@@ -488,6 +488,7 @@ async function refreshLiveData(){
     if (lt) announce(t('annNowLive') + lt.company_name);
   }
   announcedTeam = liveNow || announcedTeam;
+  if (typeof wltSyncPinContext === 'function') wltSyncPinContext();
   renderLiveFeature();
   renderAdminLiveBanner();
   checkSessionConflict();
@@ -834,10 +835,11 @@ function renderAdminLiveBanner(){
 let listSearch = '', searchDebounceTimer = null;
 function renderToolbar(){
   // Search is gone: with a stack you page through, its row + icon only pushed the cards down the
-  // screen. What is left is one slim progress line.
+  // screen. What is left is one slim progress line: the count plus one segment per team.
   const scoredCount = teams.filter(tm => mySavedScores[tm.id]).length;
-  if (!$('teamProgressTxt')) $('listToolbar').innerHTML = `<div class="progress-txt" id="teamProgressTxt"></div>`;
+  if (!$('teamProgressTxt')) $('listToolbar').innerHTML = `<div class="progress-txt" id="teamProgressTxt"></div><div class="prog-seg" id="teamProgressSeg" aria-hidden="true"></div>`;
   $('teamProgressTxt').textContent = `${scoredCount} / ${teams.length} ${t('scoredLabel')}`;
+  $('teamProgressSeg').innerHTML = teams.map(tm => `<i class="${mySavedScores[tm.id] ? 'on' : ''}"></i>`).join('');
 }
 function closeToolbarSearch(){
   if (!$('teamSearch')) return;
@@ -1352,7 +1354,7 @@ function renderWalletStack(){
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
     </div>
-    ${liveInList ? `<button class="wlt-live-pin urgent-pingable${pinTimer.urgent ? ' urgent' : ''}" id="wltLivePin" type="button"><span class="wlt-live-pin-dot" aria-hidden="true"></span>${t('walletLiveJump')}${pinTimer.text ? `<span class="wlt-live-pin-timer" id="wltLivePinTimer">${pinTimer.text}</span>` : ''}</button>` : ''}
+    ${liveInList ? `<button class="wlt-live-pin urgent-pingable${pinTimer.urgent ? ' urgent' : ''}" id="wltLivePin" type="button"><span class="wlt-live-pin-dot" aria-hidden="true"></span><span class="wlt-pin-lbl" id="wltPinLbl">${t('walletLiveJump')}</span>${pinTimer.text ? `<span class="wlt-live-pin-timer" id="wltLivePinTimer">${pinTimer.text}</span>` : ''}</button>` : ''}
     <div class="wlt-stack-wrap">
       <div class="wlt-stack" id="wltStack" style="height:${WLT_STAGE_H}px;" tabindex="0" role="group" aria-label="${t('walletStackAria')}">${
         list.map((tm, i) => {
@@ -1391,8 +1393,24 @@ function renderWalletStack(){
   });
 }
 
+/* Inside an opened team the pin is a status readout, not a jump button:
+   - this team IS live  -> "Live now" + timer, inert (nothing to jump to)
+   - another team is live -> "Now live: <name>" + timer, tap to go to that card */
+function wltSyncPinContext(){
+  const pin = $('wltLivePin'), lbl = $('wltPinLbl');
+  if (!pin || !lbl) return;
+  const liveId = settings.live_team_id ? Number(settings.live_team_id) : null;
+  if (walletActiveId == null) { lbl.textContent = t('walletLiveJump'); pin.classList.remove('in-live', 'in-other'); pin.disabled = false; pin.removeAttribute('aria-label'); return; }
+  const isLive = walletActiveId === liveId;
+  pin.classList.toggle('in-live', isLive);
+  pin.classList.toggle('in-other', !isLive);
+  const lt = teams.find(tm => tm.id === liveId);
+  lbl.textContent = isLive ? t('liveNow') : (t('annNowLive') + (lt ? lt.company_name : ''));
+  pin.disabled = isLive;            // a disabled button is not focusable/tappable: nothing to jump to
+}
 function openWalletTeam(id){
   walletActiveId = id;
+  requestAnimationFrame(wltSyncPinContext);
   savedListScrollY = window.scrollY;
   currentTeam = teams.find(tm => tm.id === id);
   const saved = mySavedScores[id];
@@ -1522,6 +1540,7 @@ function walletBackToList(){
     stack.style.height = WLT_STAGE_H + 'px';
   }
   walletActiveId = null;
+  wltSyncPinContext();
   currentTeam = null;
   setTimeout(renderWalletStack, 480);
 }
@@ -2196,3 +2215,8 @@ renderEnvNotice();
   const set = () => document.documentElement.style.setProperty('--hdr-h', h.offsetHeight + 'px');
   set(); if (window.ResizeObserver) new ResizeObserver(set).observe(h);
 })();
+
+document.addEventListener('click', e => {
+  const p = e.target.closest && e.target.closest('.wlt-about-panel');
+  if (p) p.classList.toggle('open');
+});
