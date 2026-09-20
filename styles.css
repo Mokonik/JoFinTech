@@ -908,7 +908,7 @@
      "hole" in the middle is real mask-composite this time — WITH the plain unprefixed
      `mask` alongside `-webkit-mask` (the previous round left that out, which is why it
      silently degraded into a diffuse glow instead of a crisp edge). */
-  .wlt-card.wlt-live-pop { box-shadow:var(--wlt-card-sh), 0 18px 36px color-mix(in srgb, var(--live) 40%, transparent); }
+  .wlt-card.wlt-live-pop { box-shadow:var(--wlt-card-sh), 0 10px 24px color-mix(in srgb, var(--live) 26%, transparent); }
   /* The ring SHAPE (the masked rounded-rect band) stays completely fixed — only the
      gradient fill inside it moves, and it moves via `transform: rotate()` on an
      oversized child rather than by animating the conic-gradient's own angle custom
@@ -916,20 +916,6 @@
      cost the comment above already flagged); rotating a plain filled square is
      compositor-only, effectively free, and looks identical from the outside — the
      card content isn't touched either way. */
-  .wlt-live-ring {
-    position:absolute; inset:2px; border-radius:20px; padding:4px; z-index:2; pointer-events:none;
-    overflow:hidden;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask-composite: xor;
-  }
-  .wlt-live-ring-spin {
-    position:absolute; inset:-60%;
-    background: conic-gradient(from 0deg, var(--live), color-mix(in srgb, var(--jo-blue) 65%, var(--live)) 22%, transparent 45%, transparent 72%, var(--live));
-    animation: wltRingSpin 4.5s linear infinite;
-    will-change: transform;
-  }
   @keyframes wltRingSpin { to { transform: rotate(360deg); } }
 
   /* About lives off the card now, not engraved into a paragraph on it — real cards
@@ -1004,21 +990,7 @@
   .wlt-confirm-burst.wlt-play { animation:wltBurst .6s var(--ease-pop) forwards; }
   @keyframes wltBurst { 0% { opacity:0; transform:translate(-50%,-50%) scale(.4); } 30% { opacity:1; transform:translate(-50%,-50%) scale(1.08); } 70% { opacity:1; transform:translate(-50%,-50%) scale(1); } 100% { opacity:0; transform:translate(-50%,-50%) scale(1); } }
 
-  /* Phones: the "compositor-only" rotation above isn't actually free when the spinning child
-     sits inside a masked + overflow:hidden parent — the mask has to be re-applied to the
-     rotated layer every frame, and the wide 36px live glow re-blurs alongside it. That was the
-     lag on real devices. Here the gradient is frozen (mask rasterizes once) and the ring
-     "breathes" via opacity on the whole ring layer instead, which really is compositor-only;
-     the glow shrinks too. Same red→blue strip identity, no per-frame mask work. */
-  @media (max-width:720px), (pointer:coarse) {
-    .wlt-live-ring-spin { animation:none; inset:0; background:conic-gradient(from 210deg, var(--live), color-mix(in srgb, var(--jo-blue) 65%, var(--live)) 25%, transparent 50%, transparent 72%, var(--live)); will-change:auto; }
-    .wlt-live-ring { will-change:opacity; animation:wltRingPulse 2.8s ease-in-out infinite; }
-    .wlt-card.wlt-live-pop { box-shadow:var(--wlt-card-sh), 0 8px 18px color-mix(in srgb, var(--live) 32%, transparent); }
-  }
-  @keyframes wltRingPulse { 0%,100% { opacity:.6; } 50% { opacity:1; } }
-  @media (prefers-reduced-motion: reduce) { .wlt-live-ring-spin, .wlt-live-ring { animation:none; } }
-
-/* ================= Hotfix pass: touch targets, mobile orb, reduced motion ================= */
+  /* ================= Hotfix pass: touch targets, mobile orb, reduced motion ================= */
 
 /* Tap targets: 44x44 minimum wherever a thumb is the pointer. Desktop mouse keeps the compact sizes. */
 @media (pointer:coarse), (max-width:720px) {
@@ -1128,3 +1100,28 @@ html[dir="rtl"] .wlt-live-pin.in-other::after { transform:rotate(-135deg); }
 .wlt-about-panel { cursor:pointer; }
 .wlt-about-panel .wlt-about-v { display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .wlt-about-panel.open .wlt-about-v { display:block; overflow:visible; }
+
+
+/* ================= Live ring: frame technique + three gears (see app.js baseFx) ================= */
+.wlt-live-frame { position:absolute; inset:0; border-radius:20px; overflow:hidden; z-index:-2; pointer-events:none; }
+.wlt-live-ring-spin { position:absolute; inset:-60%; will-change:transform;
+  background:conic-gradient(from 0deg, var(--live), color-mix(in srgb, var(--jo-blue) 70%, var(--live)) 22%, transparent 45%, transparent 72%, var(--live));
+  animation:wltRingSpin 6s linear infinite; }
+.wlt-live-cover { position:absolute; inset:3px; border-radius:17px; background:var(--wlt-skin-bg); z-index:-1; pointer-events:none; }
+html[data-fx="steps"] .wlt-live-ring-spin { animation:wltRingSpin 8s steps(120) infinite; }
+html[data-fx="off"] .wlt-live-ring-spin { animation:none; will-change:auto; }
+/* the two skin decorations that reach the card edge stop at the ring on the live card */
+.wlt-band-clip { position:absolute; inset:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
+.wlt-live-pop .wlt-band-clip { inset:3px; border-radius:17px; }
+.wlt-live-pop .wlt-split-cut { inset:3px; border-radius:17px; }
+
+/* ================= Settings panel ================= */
+.prefs { position:fixed; top:calc(var(--hdr-h, 72px) + env(safe-area-inset-top, 0px) + 6px); inset-inline-end:12px; width:min(330px, calc(100% - 24px)); z-index:70; background:var(--card-surface); color:var(--text); border-radius:var(--radius-lg); box-shadow:var(--sh-lg); padding:16px; display:grid; gap:12px; }
+.prefs h2 { font-size:var(--fs-lg); margin:0; }
+.prefs-lbl { font-family:var(--mono); font-size:var(--fs-2xs); letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
+.prefs-seg { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; background:var(--surface-sunken); padding:4px; border-radius:var(--radius-md); }
+.prefs-seg button { min-height:44px; border:0; border-radius:var(--radius-sm); background:transparent; color:var(--muted); font-weight:700; font-size:var(--fs-sm); cursor:pointer; }
+.prefs-seg button[aria-pressed="true"] { background:var(--card-surface); color:var(--text); box-shadow:var(--sh-sm); }
+.prefs-row { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:48px; font-size:var(--fs-base); cursor:pointer; }
+.prefs-row input { width:24px; height:24px; accent-color:var(--acc); flex-shrink:0; }
+.my-copy { margin-top:12px; width:100%; min-height:48px; }

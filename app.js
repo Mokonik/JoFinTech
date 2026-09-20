@@ -5,7 +5,7 @@ const I18N = {
         myNoScores:'You have not scored any team yet.', locked:'Locked — not the live team',
         gateSub:'Enter your judge code to continue', signInBtn:'Sign in', codeNotRecognized:'Code not recognized.',
         restricted:'restricted', doneBtn:'Done', soFar:'so far', partial:'(partial)', noMatches:'No matches.',
-        saveConnErr:'Could not save — check your connection and try again.', noConnection:'No connection — check your internet and try again.', inAppNotice:'This looks like an in-app browser (WhatsApp, Instagram, etc.). For smooth scoring, open this page in Chrome or Safari.', copyLink:'Copy link', linkCopied:'Link copied — paste it in Chrome or Safari', installApp:'Install app', iosInstallTip:'Tip: tap Share, then Add to Home Screen, to score full-screen.', offlineShowing:'Offline — showing your last saved data',  syncWaiting:'Not sent yet — waiting to upload:', syncRetry:'Retry now', syncOffline:'You are offline. Your scores are kept on this device.', tooManyAttempts:'Too many attempts — wait a moment and try again.', annOneMin:'One minute left', annTenSec:'Ten seconds left', annTimeUp:"Time's up", annNowLive:'Now live: ', teamInfo:'About this team',
+        saveConnErr:'Could not save — check your connection and try again.', noConnection:'No connection — check your internet and try again.', inAppNotice:'This looks like an in-app browser (WhatsApp, Instagram, etc.). For smooth scoring, open this page in Chrome or Safari.', copyLink:'Copy link', linkCopied:'Link copied — paste it in Chrome or Safari', installApp:'Install app', iosInstallTip:'Tip: tap Share, then Add to Home Screen, to score full-screen.', offlineShowing:'Offline — showing your last saved data',  syncWaiting:'Not sent yet — waiting to upload:', syncRetry:'Retry now', syncOffline:'You are offline. Your scores are kept on this device.', tooManyAttempts:'Too many attempts — wait a moment and try again.', annOneMin:'One minute left', annTenSec:'Ten seconds left', annTimeUp:"Time's up", annNowLive:'Now live: ', settingsTitle:'Display & comfort', motionLbl:'Motion effects', fxAuto:'Auto', fxFull:'Full', fxLow:'Saver', fxOff:'Off', keepAwakeLbl:'Keep screen awake', vibrateLbl:'Vibrate on time warnings', signOutPending:'Some scores have not been sent yet. They stay on this device until you sign in again. Sign out anyway?', copyScores:'Copy my scores', scoresCopied:'Scores copied', teamInfo:'About this team',
         autosaveNote:'scored — saves automatically',
         scoreLiveNow:'Score this team', otherTeams:'Other teams',
         progressLabel:'criteria scored', emptyMyScores:'You haven\'t scored any team yet.', goScore:'Go to Score',
@@ -23,7 +23,7 @@ const I18N = {
         myNoScores:'لم تقم بتقييم أي فريق بعد.', locked:'مقفل — ليس الفريق المباشر الآن',
         gateSub:'أدخل رمز المحكّم للمتابعة', signInBtn:'تسجيل الدخول', codeNotRecognized:'الرمز غير معروف.',
         restricted:'مقيّد', doneBtn:'تم', soFar:'حتى الآن', partial:'(جزئي)', noMatches:'لا توجد نتائج مطابقة.',
-        saveConnErr:'تعذر الحفظ — يرجى التحقق من الاتصال والمحاولة مرة أخرى.', noConnection:'لا يوجد اتصال — تحقق من الإنترنت وحاول مجدداً.', inAppNotice:'يبدو أنك تستخدم متصفحاً داخل تطبيق (واتساب، إنستغرام...). لتجربة أسلس افتح هذه الصفحة في Chrome أو Safari.', copyLink:'نسخ الرابط', linkCopied:'تم نسخ الرابط — الصقه في Chrome أو Safari', installApp:'تثبيت التطبيق', iosInstallTip:'نصيحة: اضغط مشاركة ثم إضافة إلى الشاشة الرئيسية للتقييم بملء الشاشة.', offlineShowing:'غير متصل — تُعرض آخر بياناتك المحفوظة',  syncWaiting:'لم يُرسل بعد — بانتظار الرفع:', syncRetry:'أعد المحاولة الآن', syncOffline:'أنت غير متصل. درجاتك محفوظة على هذا الجهاز.', tooManyAttempts:'محاولات كثيرة — انتظر قليلاً ثم حاول مجدداً.', annOneMin:'بقيت دقيقة واحدة', annTenSec:'بقيت عشر ثوانٍ', annTimeUp:'انتهى الوقت', annNowLive:'مباشر الآن: ', teamInfo:'عن هذا الفريق',
+        saveConnErr:'تعذر الحفظ — يرجى التحقق من الاتصال والمحاولة مرة أخرى.', noConnection:'لا يوجد اتصال — تحقق من الإنترنت وحاول مجدداً.', inAppNotice:'يبدو أنك تستخدم متصفحاً داخل تطبيق (واتساب، إنستغرام...). لتجربة أسلس افتح هذه الصفحة في Chrome أو Safari.', copyLink:'نسخ الرابط', linkCopied:'تم نسخ الرابط — الصقه في Chrome أو Safari', installApp:'تثبيت التطبيق', iosInstallTip:'نصيحة: اضغط مشاركة ثم إضافة إلى الشاشة الرئيسية للتقييم بملء الشاشة.', offlineShowing:'غير متصل — تُعرض آخر بياناتك المحفوظة',  syncWaiting:'لم يُرسل بعد — بانتظار الرفع:', syncRetry:'أعد المحاولة الآن', syncOffline:'أنت غير متصل. درجاتك محفوظة على هذا الجهاز.', tooManyAttempts:'محاولات كثيرة — انتظر قليلاً ثم حاول مجدداً.', annOneMin:'بقيت دقيقة واحدة', annTenSec:'بقيت عشر ثوانٍ', annTimeUp:'انتهى الوقت', annNowLive:'مباشر الآن: ', settingsTitle:'العرض والراحة', motionLbl:'المؤثرات الحركية', fxAuto:'تلقائي', fxFull:'كامل', fxLow:'توفير', fxOff:'إيقاف', keepAwakeLbl:'إبقاء الشاشة مضاءة', vibrateLbl:'اهتزاز عند تحذيرات الوقت', signOutPending:'بعض الدرجات لم تُرسل بعد. تبقى على هذا الجهاز حتى تسجّل الدخول مجدداً. تسجيل الخروج على أي حال؟', copyScores:'نسخ درجاتي', scoresCopied:'تم نسخ الدرجات', teamInfo:'عن هذا الفريق',
         autosaveNote:'تم التقييم — يُحفظ تلقائياً',
         scoreLiveNow:'قيّم هذا الفريق', otherTeams:'الفرق الأخرى',
         progressLabel:'معايير تم تقييمها', emptyMyScores:'لم تقم بتقييم أي فريق بعد.', goScore:'الذهاب إلى التقييم',
@@ -48,6 +48,10 @@ function applyLang(){
   document.getElementById('gateSub').textContent = t('gateSub');
   document.getElementById('signInBtn').textContent = t('signInBtn');
   if (typeof renderEnvNotice === 'function') renderEnvNotice();
+  const setTxt = (id, k) => { const el = document.getElementById(id); if (el) el.textContent = t(k); };
+  setTxt('prefsTitle', 'settingsTitle'); setTxt('prefsFxLbl', 'motionLbl'); setTxt('prefsAwakeLbl', 'keepAwakeLbl'); setTxt('prefsVibLbl', 'vibrateLbl');
+  document.querySelectorAll('#prefsFx button').forEach(b => { b.textContent = t({ auto:'fxAuto', full:'fxFull', low:'fxLow', off:'fxOff' }[b.dataset.fx]); });
+  const fb = document.getElementById('fxBtn'); if (fb) fb.setAttribute('aria-label', t('settingsTitle'));
   document.getElementById('sessionConflictText').textContent = t('sessionConflict');
   document.querySelectorAll('#langSeg button').forEach(b => { b.classList.toggle('active', b.dataset.l === lang); b.setAttribute('aria-pressed', b.dataset.l === lang ? 'true' : 'false'); });
   document.getElementById('langSeg').classList.toggle('alt', lang === 'ar');
@@ -363,6 +367,7 @@ let adminSettingsMap = {};
    these ran unconditionally before, costing a Supabase round-trip every 5s even with the phone
    screen off, which is real battery/data/radio-wake cost during a multi-hour live event. */
 document.addEventListener('visibilitychange', () => {
+  syncWakeLock();
   if (!judge) return;
   if (document.hidden) {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
@@ -372,6 +377,7 @@ document.addEventListener('visibilitychange', () => {
     if (!dataRefreshInterval) { restartDataPolling(); refreshLiveData(); }
     syncServerClock();
     flushOutbox();
+    startFxMonitor(20000);
   }
 });
 
@@ -413,6 +419,8 @@ async function signIn(){
   syncServerClock();
   startRealtime();
   flushOutbox();
+  syncWakeLock();
+  startFxMonitor(45000);
   setTimeout(() => positionNavLine(nav.querySelector('button.active')), 60);
   if (!judge.is_admin) checkRubricAck();
   claimSession();
@@ -511,6 +519,7 @@ function signOut(){
   document.body.classList.remove('sheet-open');
   hideMoodOrb();
   judge = null; teams = []; mySavedScores = {}; currentTeam = null;
+  syncWakeLock();
   if (timerInterval) clearInterval(timerInterval);
   if (dataRefreshInterval) clearInterval(dataRefreshInterval);
   stopRealtime();
@@ -524,7 +533,10 @@ function signOut(){
   $('gate').classList.remove('hide');
 }
 $('sessionConflictDismiss').onclick = () => $('sessionConflictBanner').classList.add('hide');
-$('logout').onclick = signOut;
+$('logout').onclick = async () => {
+  if (judge && Object.keys(outboxMine()).length && !(await appConfirm(t('signOutPending')))) return;
+  signOut();
+};
 
 // Mobile header: language/theme/sign-out collapse into one menu button under 720px
 // (see the compact-header comment in styles.css) — desktop never shows the trigger,
@@ -742,9 +754,10 @@ function announceTimerThresholds(state){
   const key = settings.live_team_id + '|' + settings.timer_started_at;
   if (key !== lastAnnouncedKey) { lastAnnouncedKey = key; announcedThresholds = {}; }
   const fire = (id, msg) => { if (!announcedThresholds[id]) { announcedThresholds[id] = true; announce(msg); } };
-  if (state.remaining <= 0) fire('up', t('annTimeUp'));
-  else if (state.remaining <= 10) fire('10', t('annTenSec'));
-  else if (state.remaining <= 60) fire('60', t('annOneMin'));
+  const buzz = p => { if (vibrateWarn && navigator.vibrate) navigator.vibrate(p); };
+  if (state.remaining <= 0) { if (!announcedThresholds.up) buzz([500]); fire('up', t('annTimeUp')); }
+  else if (state.remaining <= 10) { if (!announcedThresholds['10']) buzz([80, 60, 80]); fire('10', t('annTenSec')); }
+  else if (state.remaining <= 60) { if (!announcedThresholds['60']) buzz([120]); fire('60', t('annOneMin')); }
 }
 function tickLiveTimer(){
   if (!settings.live_team_id) return;
@@ -1118,8 +1131,7 @@ function wltLayoutStack(list){
     // compositor-only transform, not a repainting gradient — see the ring's own CSS
     // comment) but it's still real GPU/compositor work happening for a card that, at
     // most 4 slots deep, is completely invisible off-window. Free to pause regardless.
-    // (on phones the animated element is the ring itself — pulse — so pause both)
-    el.querySelectorAll('.wlt-live-ring, .wlt-live-ring-spin').forEach(r => {
+    el.querySelectorAll('.wlt-live-ring-spin').forEach(r => {
       r.style.animationPlayState = inWindow ? 'running' : 'paused';
     });
     // A card returning from hero state still carries a literal inline transform
@@ -1228,7 +1240,10 @@ function wltGreenCircleMark(size){
 
 function wltCardInner(tm, isLive, isLocked){
   const skin = wltSkinFor(tm);
-  const ring = isLive ? `<div class="wlt-live-ring"><div class="wlt-live-ring-spin"></div></div>` : '';
+  // Frame ring (no mask): a spinning gradient sits BEHIND a "cover" inset by the ring thickness, both
+  // under the card's own content (negative z-index). Rotating one texture is GPU-only; the old
+  // masked ring re-applied a mask on every frame, which is what phones struggled with.
+  const ring = isLive ? `<div class="wlt-live-frame" aria-hidden="true"><div class="wlt-live-ring-spin"></div></div><div class="wlt-live-cover" aria-hidden="true"></div>` : '';
   const lockedTag = isLocked ? `<span class="wlt-locked-tag" title="${t('locked')}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>${t('notLiveYet')}</span>` : '';
   const liveSeal = isLive ? `<span class="wlt-live-seal"><span class="dot-static"></span>${t('liveNow')}</span>` : '';
   // Scored is the one state every card can be in regardless of live/locked, so a judge
@@ -1289,7 +1304,7 @@ function wltCardInner(tm, isLive, isLocked){
     return `
       ${ring}${chipFloat}
       ${headGroup}
-      <div class="wlt-ribbon-band"></div>
+      <div class="wlt-band-clip"><div class="wlt-ribbon-band"></div></div>
       ${bottomRow}
     `;
   }
@@ -2147,7 +2162,15 @@ function renderMyScores(){
     const total = criteria.reduce((sum, c) => sum + (Number(s.scores[c.key]) || 0) * c.weight, 0) * 10;
     return `<button type="button" class="my-row" data-id="${tm.id}" style="--i:${idx}"><div><div class="nm">${esc(tm.company_name)}</div><div class="nt">${esc(s.notes || '')}</div></div><div class="sc">${total.toFixed(1)}</div></button>`;
   }).join('');
-  $('myScoresWrap').innerHTML = rows;
+  $('myScoresWrap').innerHTML = rows + `<button type="button" class="button my-copy" id="copyScoresBtn">${esc(t('copyScores'))}</button>`;
+  $('copyScoresBtn').onclick = async () => {
+    const lines = scoredTeams.map(tm => {
+      const sc = mySavedScores[tm.id];
+      const tot = criteria.reduce((sum, c) => sum + (Number(sc.scores[c.key]) || 0) * c.weight, 0) * 10;
+      return `${tm.company_name} \u2014 ${tot.toFixed(1)}/100`;
+    });
+    try { await navigator.clipboard.writeText(`${judge.name}\n` + lines.join('\n')); showToast(t('scoresCopied')); } catch (e) { showToast(t('noConnection')); }
+  };
   $('myScoresWrap').querySelectorAll('.my-row').forEach(row => {
     row.onclick = () => { show('score'); openWalletTeam(Number(row.dataset.id)); };
   });
@@ -2220,3 +2243,96 @@ document.addEventListener('click', e => {
   const p = e.target.closest && e.target.closest('.wlt-about-panel');
   if (p) p.classList.toggle('open');
 });
+
+/* ---------- display & comfort settings ---------- */
+const PREF = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+};
+var fxPref = PREF.get('fxMode', 'auto');                 // auto | full | low | off
+var keepAwake = PREF.get('keepAwake', '1') === '1';
+var vibrateWarn = PREF.get('vibrateWarn', '1') === '1';
+var lowBattery = false;
+
+/* Motion effects. The live card's moving border has three gears: full (smooth spin), steps (15 steps a
+   second, a fraction of the GPU work) and off. Auto starts phones and weaker devices on "steps",
+   honours reduced-motion / data-saver / a nearly empty battery, and watches the frame rate for the first
+   seconds after sign-in: if the device struggles it steps down by itself. */
+function baseFx(){
+  if (fxPref === 'off' || lowBattery) return 'off';
+  if (fxPref === 'full') return 'full';
+  if (fxPref === 'low') return 'steps';
+  const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saver = navigator.connection && navigator.connection.saveData;
+  if (rm || saver) return 'off';
+  const weak = (window.matchMedia && matchMedia('(pointer:coarse)').matches) || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+  return weak ? 'steps' : 'full';
+}
+function applyFx(level){ document.documentElement.dataset.fx = level; }
+applyFx(baseFx());
+if (navigator.getBattery) navigator.getBattery().then(b => {
+  const check = () => { const low = !b.charging && b.level < 0.15; if (low !== lowBattery) { lowBattery = low; applyFx(baseFx()); } };
+  check(); b.addEventListener('levelchange', check); b.addEventListener('chargingchange', check);
+}).catch(() => {});
+let fxMonitorUntil = 0, fxRaf = 0, fxFrames = 0, fxLast = 0, fxBad = 0;
+function startFxMonitor(ms){
+  if (fxPref !== 'auto') return;
+  fxMonitorUntil = performance.now() + ms;
+  if (fxRaf) return;
+  fxLast = performance.now(); fxFrames = 0; fxBad = 0;
+  const tick = now => {
+    fxFrames++;
+    if (now - fxLast >= 800) {
+      const fps = fxFrames * 1000 / (now - fxLast); fxFrames = 0; fxLast = now;
+      if (!document.hidden) {
+        fxBad = fps < 40 ? fxBad + 1 : 0;
+        if (fxBad >= 3) {
+          const cur = document.documentElement.dataset.fx;
+          if (cur === 'full') applyFx('steps'); else if (cur === 'steps') applyFx('off');
+          fxBad = 0;
+        }
+      }
+    }
+    if (now < fxMonitorUntil && fxPref === 'auto') fxRaf = requestAnimationFrame(tick); else fxRaf = 0;
+  };
+  fxRaf = requestAnimationFrame(tick);
+}
+
+/* Keep the screen awake while a judge is signed in and the tab is visible: a phone that dims mid-pitch
+   costs seconds. Off in settings; released on sign-out. */
+let wakeLockSentinel = null;
+async function syncWakeLock(){
+  try {
+    if (!('wakeLock' in navigator)) return;
+    const want = keepAwake && !!judge && !document.hidden;
+    if (want && !wakeLockSentinel) {
+      wakeLockSentinel = await navigator.wakeLock.request('screen');
+      wakeLockSentinel.addEventListener('release', () => { wakeLockSentinel = null; });
+    } else if (!want && wakeLockSentinel) { await wakeLockSentinel.release(); wakeLockSentinel = null; }
+  } catch (e) { wakeLockSentinel = null; }
+}
+
+(function wirePrefs(){
+  const btn = document.getElementById('fxBtn'), panel = document.getElementById('prefsPanel');
+  if (!btn || !panel) return;
+  const paint = () => {
+    panel.querySelectorAll('#prefsFx button').forEach(b => b.setAttribute('aria-pressed', b.dataset.fx === fxPref));
+    document.getElementById('prefsAwake').checked = keepAwake;
+    document.getElementById('prefsVib').checked = vibrateWarn;
+  };
+  const setOpen = open => {
+    panel.classList.toggle('hide', !open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) { paint(); const first = panel.querySelector('#prefsFx button'); if (first) first.focus({ preventScroll: true }); }
+  };
+  btn.setAttribute('aria-haspopup', 'dialog'); btn.setAttribute('aria-expanded', 'false');
+  btn.onclick = e => { e.stopPropagation(); setOpen(panel.classList.contains('hide')); };
+  panel.onclick = e => e.stopPropagation();
+  document.addEventListener('click', () => { if (!panel.classList.contains('hide')) setOpen(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.classList.contains('hide')) { setOpen(false); btn.focus(); } });
+  panel.querySelectorAll('#prefsFx button').forEach(b => b.onclick = () => {
+    fxPref = b.dataset.fx; PREF.set('fxMode', fxPref); applyFx(baseFx()); paint(); startFxMonitor(20000);
+  });
+  document.getElementById('prefsAwake').onchange = e => { keepAwake = e.target.checked; PREF.set('keepAwake', keepAwake ? '1' : '0'); syncWakeLock(); };
+  document.getElementById('prefsVib').onchange = e => { vibrateWarn = e.target.checked; PREF.set('vibrateWarn', vibrateWarn ? '1' : '0'); if (vibrateWarn && navigator.vibrate) navigator.vibrate(40); };
+})();

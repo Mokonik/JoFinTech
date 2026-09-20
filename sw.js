@@ -10,7 +10,7 @@
    - Supabase (live data, sign-in, scores): never touched here. The app keeps its own last-good data
      snapshot and its own score outbox (see app.js).
    Bump VERSION to drop every old cache at once. */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = 'jo-portal-' + VERSION;
 const SHELL = ['./', 'index.html', 'teams.html', 'styles.css', 'app.js', 'teams.js', 'config.js', 'manifest.webmanifest',
   'assets/jo-mark.png', 'assets/green-circle-mark.png', 'assets/icon-192.png'];
