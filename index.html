@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JO Fintech Festival 2026 — Judge Panel</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 116'%3E%3Crect width='100' height='116' rx='18' fill='%23fff'/%3E%3Crect x='34' y='8' width='30' height='58' rx='9' fill='%231B3B7A'/%3E%3Crect x='14' y='42' width='30' height='58' rx='9' fill='%232F8FEF'/%3E%3Cpath d='M14 78 v14 a22 22 0 0 0 22 22 h10 a14 14 0 0 0 14 -14 v-10 h-24 a8 8 0 0 1 -8 -8 v-4 Z' fill='%231B3B7A'/%3E%3Cpath d='M70 10 l4.2 9.4 10.3 1.1 -7.7 7 2.1 10.2 -8.9 -5.4 -8.9 5.4 2.1 -10.2 -7.7 -7 10.3 -1.1 Z' fill='%23E33B3B'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B1A24">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@600;700&family=Cairo:wght@400;600;700;800&family=Martian+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous" defer></script>
+<script src="config.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="orb orb-mood" id="orbMood"></div>
+
+<div id="gate">
+  <div class="gate-card">
+        <div class="brand" style="justify-content:center; margin-bottom:2px;">
+      <div class="jo-mark-plate" id="joMarkPlateGate" style="width:26px; height:26px; border-radius:7px;"></div>
+      <h1 style="font-size:var(--fs-lg);">JO Fintech Festival <span class="brand-year">2026</span></h1>
+    </div>
+    <div class="brand-sub-line" style="text-align:center; margin-bottom:10px;">FinTech World Cup &middot; Judging Portal</div>
+    <p id="gateSub">Enter your judge code to continue</p>
+    <input id="code" placeholder="J-CODE-01" aria-label="Judge code" autocomplete="off">
+    <button id="signInBtn">Sign in</button>
+    <div class="gate-msg" id="gateMsg"></div>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <header>
+    <div class="header-content">
+      <div>
+        <div class="brand">
+          <div class="jo-mark-plate" id="joMarkPlateHeader"></div>
+          <div>
+            <h1>JO Fintech Festival <span class="brand-year">2026</span></h1>
+            <div class="brand-sub-line">FinTech World Cup &middot; Judging Portal</div>
+          </div>
+        </div>
+        <div class="who" id="who"></div>
+      </div>
+      <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="headerControls">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <div class="controls" id="headerControls">
+        <div class="langseg" id="langSeg" role="group" aria-label="Language"><div class="pill"></div><button data-l="en" class="active">EN</button><button data-l="ar">AR</button></div>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg></button>
+        <button class="txt-btn" id="logout">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="sessionConflictBanner" class="hide session-banner">
+    <span id="sessionConflictText"></span>
+    <button id="sessionConflictDismiss" type="button">&times;</button>
+  </div>
+
+  <nav>
+    <div class="enav" id="mainNav">
+      <div class="eline" id="navLine"></div>
+      <button class="active" data-view="score" id="tabScore"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="1"/></svg><span>Score</span></button>
+      <button data-view="myscores" id="tabMyScores"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2.4"/><path d="M9 8.5h6M9 12.5h6M9 16.5h3.5"/></svg><span>My scores</span></button>
+      <button data-view="admin" id="tabAdmin" class="hide"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 3v5c0 4.6-3 8-7 9-4-1-7-4.4-7-9v-5l7-3Z"/><path d="M9.2 12.2l1.9 1.9 3.7-3.9"/></svg><span>Admin</span></button>
+    </div>
+  </nav>
+
+  <main>
+    <section id="viewScore">
+      <div id="listToolbar"></div>
+      <div id="liveFeatureWrap"></div>
+      <div id="teamListWrap"></div>
+      <div id="teamDetailWrap" class="hide"></div>
+    </section>
+
+    <section id="viewMyscores" class="hide">
+      <div id="myScoresWrap"></div>
+    </section>
+
+    <section id="viewAdmin" class="hide">
+      <div class="admin-live-banner urgent-pingable hide" id="adminLiveBanner"></div>
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-navline" id="adminNavLine"></div>
+          <div>
+            <div class="admin-nav-label">Overview</div>
+            <button class="admin-nav-item active" data-sec="overview">Overview</button>
+          </div>
+          <div>
+            <div class="admin-nav-label">Manage</div>
+            <button class="admin-nav-item" data-sec="judges">Judges</button>
+            <button class="admin-nav-item" data-sec="teams">Teams</button>
+            <button class="admin-nav-item" data-sec="criteria">Criteria</button>
+            <button class="admin-nav-item" data-sec="about">About content</button>
+          </div>
+          <div>
+            <div class="admin-nav-label">Live event</div>
+            <button class="admin-nav-item" data-sec="live">Live team &amp; timer</button>
+            <button class="admin-nav-item" data-sec="stage">Stage &amp; advancement</button>
+            <button class="admin-nav-item" data-sec="publish">Public results</button>
+          </div>
+          <div>
+            <div class="admin-nav-label">Data</div>
+            <button class="admin-nav-item" data-sec="scoreboard">Full scoreboard</button>
+            <button class="admin-nav-item" data-sec="allscores">All scores</button>
+            <button class="admin-nav-item" data-sec="activity">Recent activity</button>
+          </div>
+        </aside>
+
+        <div class="admin-drawer-backdrop" id="adminDrawerBackdrop"></div>
+
+        <div class="admin-drawer" id="judgeDrawer">
+          <div class="admin-drawer-header"><h2>Add judge</h2><button class="admin-drawer-close" aria-label="Close" id="judgeDrawerClose" type="button">&times;</button></div>
+          <form class="admin-form" id="addJudgeForm">
+            <input type="text" id="newJudgeName" placeholder="Judge name" aria-label="Judge name" required>
+            <input type="text" id="newJudgeCode" placeholder="Code, e.g. J-CODE-07" aria-label="Judge code" required>
+            <label class="admin-checkbox"><input type="checkbox" id="newJudgeAdmin"> Admin access</label>
+            <button class="button button-primary" type="submit">Add judge</button>
+          </form>
+        </div>
+
+        <div class="admin-drawer" id="teamDrawer">
+          <div class="admin-drawer-header"><h2 id="teamDrawerTitle">Add team</h2><button class="admin-drawer-close" aria-label="Close" id="teamDrawerClose" type="button">&times;</button></div>
+          <form class="admin-form" id="addTeamForm">
+            <input type="text" id="teamName" placeholder="Company name" aria-label="Company name" required>
+            <input type="text" id="teamCategory" placeholder="Category" aria-label="Category" required>
+            <select id="teamStage">
+              <option value="MVP">MVP</option>
+              <option value="Live Pilot">Live Pilot</option>
+              <option value="Market Ready">Market Ready</option>
+              <option value="Commercially Active">Commercially Active</option>
+            </select>
+            <textarea id="teamDescEn" placeholder="Description shown to judges (English)" style="min-height:60px; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:var(--sans); font-size:var(--fs-base);"></textarea>
+            <textarea id="teamDescAr" dir="rtl" placeholder="الوصف الذي يراه المحكّمون (عربي)" style="min-height:60px; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:var(--sans); font-size:var(--fs-base);"></textarea>
+            <label style="display:flex; align-items:center; gap:10px; font-size:var(--fs-sm); color:var(--muted);">Card color (auto-assigned unless set) <input type="color" id="teamAccentColor" value="#3B6E8F" style="width:40px; height:30px; padding:2px; border:1px solid var(--border-c); border-radius:var(--radius-xs); background:var(--bg); cursor:pointer;"></label>
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--fs-sm); color:var(--muted);">Wallet card style
+              <select id="teamCardSkin">
+                <option value="">Auto (by team order)</option>
+                <option value="wlt-skin-flat">Flat + Shape</option>
+                <option value="wlt-skin-metal">Engraved Metal</option>
+                <option value="wlt-skin-split">Split Block</option>
+                <option value="wlt-skin-ribbon">Ribbon</option>
+                <option value="wlt-skin-frost">Frosted Glass</option>
+              </select>
+            </label>
+            <button class="button button-primary" type="submit" id="teamSubmitBtn">Add team</button>
+            <button class="button hide" type="button" id="teamCancelEdit">Cancel edit</button>
+          </form>
+          <div style="border-top:1px solid var(--border-c); margin-top:14px; padding-top:12px;">
+            <label style="font-size:var(--fs-sm);color:var(--muted);">Bulk import — paste CSV lines: name,category,stage</label>
+            <textarea id="bulkTeamsCsv" placeholder="Acme Pay,Payments,MVP" style="width:100%; min-height:70px; margin-top:6px; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:var(--mono); font-size:var(--fs-sm);"></textarea>
+            <button class="button" type="button" id="bulkImportBtn" style="margin-top:8px;">Import teams</button>
+          </div>
+        </div>
+
+        <div class="admin-drawer" id="critDrawer">
+          <div class="admin-drawer-header"><h2 id="critDrawerTitle">Add criterion</h2><button class="admin-drawer-close" aria-label="Close" id="critDrawerClose" type="button">&times;</button></div>
+          <form class="admin-form" id="addCriterionForm">
+            <input type="text" id="critKey" placeholder="key, e.g. problem_market" aria-label="Criterion key" required>
+            <input type="text" id="critLabelEn" placeholder="Label (EN)" aria-label="Label (English)" required>
+            <input type="text" id="critLabelAr" placeholder="Label (AR)" aria-label="Label (Arabic)" required>
+            <input type="text" id="critDescEn" placeholder="Description (EN)" aria-label="Description (English)">
+            <input type="text" id="critDescAr" placeholder="Description (AR)" aria-label="Description (Arabic)">
+            <input type="number" id="critWeight" placeholder="Weight, e.g. 0.10" aria-label="Weight" step="0.01" min="0" max="1" required>
+            <input type="number" id="critSort" placeholder="Sort order" aria-label="Sort order" value="0">
+            <button class="button button-primary" type="submit" id="critSubmitBtn">Add criterion</button>
+            <button class="button hide" type="button" id="critCancelEdit">Cancel edit</button>
+          </form>
+        </div>
+
+        <div class="admin-main">
+
+          <section class="admin-section" id="adminSec-overview">
+            <div id="adminSummary" class="stats-grid"></div>
+            <div class="card">
+              <div class="admin-card-header"><h2>Tournament pipeline</h2></div>
+              <div id="pipelineFlow"></div>
+            </div>
+            <div class="card">
+              <div class="admin-card-header"><h2>Judge consistency</h2><span style="font-size:var(--fs-xs); color:var(--muted);">Flags a single judge's score when it sits far from the others on the same team + criterion — not to overrule anyone, just to catch a fat-fingered number before it skews a ranking.</span></div>
+              <div id="consistencyRadar"></div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-judges">
+            <div class="card">
+              <div class="admin-card-header"><h2>Judges</h2><button class="button button-primary" type="button" id="openJudgeDrawer">+ Add judge</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Name</th><th>Code</th><th>Admin</th><th></th></tr></thead><tbody id="adminJudges"></tbody></table></div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-teams">
+            <div class="card">
+              <div class="admin-card-header"><h2>Teams</h2><button class="button button-primary" type="button" id="openTeamDrawer">+ Add team</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Company</th><th>Category</th><th>Stage 2</th><th></th></tr></thead><tbody id="adminTeams"></tbody></table></div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-criteria">
+            <div class="card">
+              <div class="admin-card-header"><h2>Criteria</h2><button class="button button-primary" type="button" id="openCritDrawer">+ Add criterion</button></div>
+              <div class="langseg" id="critStageSeg" style="align-self:flex-start; display:inline-flex; margin-bottom:14px;"><div class="pill"></div>
+                <button data-stage="1" type="button" class="active">Stage 1</button>
+                <button data-stage="2" type="button">Stage 2</button>
+              </div>
+              <div id="criteriaList"></div>
+              <div class="weight-total" id="weightTotal"></div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-about">
+            <div class="card">
+              <div class="admin-card-header"><h2>About page content</h2></div>
+              <div class="admin-form" style="max-width:640px;">
+                <label style="font-size:var(--fs-sm);color:var(--muted);">English</label>
+                <textarea id="aboutEn" style="min-height:80px; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:var(--sans); font-size:var(--fs-base);"></textarea>
+                <label style="font-size:var(--fs-sm);color:var(--muted);">Arabic</label>
+                <textarea id="aboutAr" dir="rtl" style="min-height:80px; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:var(--sans); font-size:var(--fs-base);"></textarea>
+                <button class="button button-primary" type="button" id="saveAboutBtn">Save about content</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-live">
+            <div class="card">
+              <div class="admin-card-header"><h2>Live team &amp; timer</h2></div>
+              <div class="admin-form">
+                <div class="combo-wrap" id="liveTeamCombo">
+                  <input id="liveTeamSelect" placeholder="Click to choose a team, or leave blank for none" autocomplete="off">
+                  <div class="combo-list hide" id="liveTeamDropdown"></div>
+                </div>
+                <input type="number" id="timerDuration" value="600" placeholder="Duration (seconds)">
+                <button class="button button-primary" type="button" id="startTimerBtn">Set live & start timer</button>
+                <button class="button" type="button" id="setLiveNoTimerBtn">Set live (no timer)</button>
+                <button class="button button-danger" type="button" id="stopTimerBtn">Clear live team</button>
+                <div style="border-top:1px solid var(--border-c); margin-top:6px; padding-top:12px;">
+                  <label class="toggle-row"><span class="toggle"><input type="checkbox" id="restrictToLive"><span class="toggle-track"><span class="toggle-thumb"></span></span></span> Restrict scoring to live team only</label>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">Default posture — nothing is scoreable until you set a live team. Applies instantly, does not touch the timer.</div>
+                </div>
+                <div style="border-top:1px solid var(--border-c); margin-top:6px; padding-top:12px;">
+                  <label class="toggle-row"><span class="toggle"><input type="checkbox" id="cardFlipLayoutToggle" checked><span class="toggle-track"><span class="toggle-thumb"></span></span></span> Card-flip scoring on phones</label>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">On phones, judges score one criterion at a time in a swipeable deck. Turn off to fall back to the classic full-list layout for everyone.</div>
+                </div>
+                <div style="border-top:1px solid var(--border-c); margin-top:6px; padding-top:12px;">
+                  <label class="toggle-row"><span class="toggle"><input type="checkbox" id="rubricAckToggle" checked><span class="toggle-track"><span class="toggle-thumb"></span></span></span> Require "I've read the criteria" step before scoring</label>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">Shown once per judge on first sign-in. Turn off to skip it entirely for everyone.</div>
+                </div>
+                <div style="border-top:1px solid var(--border-c); margin-top:6px; padding-top:12px;">
+                  <label class="toggle-row"><span class="toggle"><input type="checkbox" id="scoreLockToggle" checked><span class="toggle-track"><span class="toggle-thumb"></span></span></span> Let judges lock their own scores</label>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">Shows a lock/unlock button on the scoring screen once a team has been scored. Turn off to hide it and remove the option entirely.</div>
+                </div>
+                <div style="border-top:1px solid var(--border-c); margin-top:6px; padding-top:12px;">
+                  <label class="toggle-row"><span class="toggle"><input type="checkbox" id="lockOneWayToggle"><span class="toggle-track"><span class="toggle-thumb"></span></span></span> Locking is one-way for judges</label>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">Once a judge locks a score, they can't unlock it themselves — only you can, from All scores below. Makes locking a real commitment instead of a toggle.</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="admin-card-header"><h2>Public view (teams.html)</h2></div>
+              <div class="admin-form">
+                <label style="font-size:var(--fs-sm); color:var(--muted);">Next up</label>
+                <div class="combo-wrap" id="nextUpTeamCombo">
+                  <input id="nextUpTeamSelect" placeholder="Click to choose a team, or leave blank for none" autocomplete="off">
+                  <div class="combo-list hide" id="nextUpTeamDropdown"></div>
+                </div>
+                <div style="font-size:var(--fs-xs); color:var(--muted); margin:2px 0 10px;">Shown on the public screen's persistent top strip alongside the live team and timer. Independent of the live team control above — you set this manually, nothing advances it automatically.</div>
+                <button class="button button-primary" type="button" id="setNextUpBtn">Set next up</button>
+                <button class="button button-danger" type="button" id="clearNextUpBtn">Clear next up</button>
+                <div style="border-top:1px solid var(--border-c); margin-top:12px; padding-top:12px;">
+                  <label style="font-size:var(--fs-sm); color:var(--muted);">Public screen language</label>
+                  <div class="langseg" id="publicLangSeg" style="margin-top:6px;"><div class="pill"></div><button type="button" data-l="en" class="active">EN</button><button type="button" data-l="ar">AR</button></div>
+                  <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">The public screen has no language switch of its own now — a venue kiosk isn't something a passerby should be able to fiddle with. This is the only control for it.</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-stage">
+            <div class="card">
+              <div class="admin-card-header"><h2>Advance to Stage 2</h2></div>
+              <div style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:4px;">Judges are currently scoring <b id="stageNowLabel" style="color:var(--text);">Stage 1</b></div>
+              <div id="stage2Readiness" style="font-size:var(--fs-xs); color:var(--muted); margin-bottom:12px;"></div>
+              <label style="font-size:var(--fs-sm);color:var(--muted);">Who's advancing — top scorers are pre-checked, adjust as needed</label>
+              <div id="advanceTeamsList" style="max-height:240px;overflow:auto; margin-top:8px;"></div>
+              <div style="display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap;">
+                <button class="button button-primary" type="button" id="confirmStage2Btn">Confirm &amp; switch everyone to Stage 2</button>
+                <button class="button" type="button" id="revertStage1Btn" style="font-size:var(--fs-xs);">Switch back to Stage 1</button>
+              </div>
+              <div id="whosOut" style="margin-top:14px;"></div>
+              <div style="border-top:1px solid var(--border-c); margin-top:14px; padding-top:12px;">
+                <label class="admin-checkbox"><input type="checkbox" id="weightGuardToggle" checked> Block advancing if Stage 2 criteria weights don't add up to 100%</label>
+                <div style="font-size:var(--fs-xs); color:var(--muted); margin-top:4px;">Safety check to catch a rubric mistake before it silently skews every score. Turn off only if you know what you're doing.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-publish">
+            <div class="card">
+              <div class="admin-card-header"><h2>Public results</h2></div>
+              <div class="admin-form">
+                <label class="admin-checkbox"><input type="checkbox" id="stage1Published"> Publish Stage 1 top 5</label>
+                <label class="admin-checkbox"><input type="checkbox" id="stage2Published"> Publish Stage 2 final results</label>
+                <button class="button button-primary" type="button" id="savePublishBtn">Save publish settings</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-scoreboard">
+            <div class="card">
+              <div class="admin-card-header">
+                <h2>Full scoreboard</h2>
+                <div style="display:flex; gap:8px;">
+                  <button class="button" id="exportScoreboardBtn">Export CSV</button>
+                  <button class="button" id="printScoreboardBtn">Print / Save PDF</button>
+                </div>
+              </div>
+              <div id="fullScoreboard"></div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-allscores">
+            <div class="card">
+              <div class="admin-card-header"><h2>Coverage</h2><span style="font-size:var(--fs-xs); color:var(--muted);">Teams down, judges across — filled means scored. Spot a gap during a live event at a glance instead of scanning the table below.</span></div>
+              <div id="coverageGrid" style="overflow-x:auto;"></div>
+            </div>
+            <div class="card">
+              <div class="admin-card-header">
+                <h2>All scores</h2>
+                <button class="button button-danger" id="clearAllScores">Clear all scores</button>
+              </div>
+              <div class="table-wrap">
+                <div class="virt-header">
+                  <div>Team</div><div>Judge</div><div>Stage</div><div>Total</div><div>Notes</div><div></div>
+                </div>
+                <div id="adminScoresViewport" class="virt-viewport">
+                  <div class="scroll-shadow-top" id="adminScoresShadow"></div>
+                  <div id="adminScoresSpacer" style="position:relative;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section hide" id="adminSec-activity">
+            <div class="card">
+              <div class="admin-card-header"><h2>Recent activity</h2></div>
+              <div id="activityFeed" style="max-height:400px; overflow:auto;"></div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="ackOverlay" class="hide" role="dialog" aria-modal="true" aria-labelledby="ackTitleEl" style="position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(11,26,36,.45); backdrop-filter:blur(4px);">
+  <div class="gate-card" style="max-width:380px; text-align:start;">
+    <svg width="48" height="48" viewBox="0 0 90 90" style="display:block;margin:0 auto 12px;"><circle cx="45" cy="45" r="40" fill="var(--acc)"/><circle cx="33" cy="40" r="5" fill="#fff"/><circle cx="57" cy="40" r="5" fill="#fff"/><path d="M30 58 Q45 70 60 58" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M20 25 Q30 10 45 15" stroke="var(--live)" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+    <h1 id="ackTitleEl" style="margin-bottom:10px; text-align:center;"></h1>
+    <p id="ackBodyEl" style="margin-bottom:14px; text-align:start;"></p>
+    <a id="ackRulebookLink" href="teams.html" target="_blank" rel="noopener" style="display:inline-block; font-size:var(--fs-sm); color:var(--acc); margin-bottom:16px; text-decoration:underline;"></a>
+    <label class="admin-checkbox" style="align-items:flex-start; gap:10px; margin-bottom:16px;"><input type="checkbox" id="ackCheckbox" style="margin-top:2px; flex-shrink:0;"> <span id="ackCheckboxLabel" style="line-height:1.4;"></span></label>
+    <button id="ackContinueBtn" style="width:100%; padding:12px; border:none; border-radius:var(--radius-pill); background:var(--acc); color:var(--acc-ink); font-weight:700; font-size:var(--fs-md); cursor:pointer; font-family:var(--sans); opacity:.5;" disabled>Continue</button>
+  </div>
+</div>
+
+<div id="appModal" class="hide app-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="appModalMsg">
+  <div class="gate-card app-modal-card">
+    <p id="appModalMsg" class="app-modal-msg"></p>
+    <input id="appModalInput" class="app-modal-input hide" type="text">
+    <div class="app-modal-row">
+      <button id="appModalCancel" class="button app-modal-cancel">Cancel</button>
+      <button id="appModalOk" class="button button-primary app-modal-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="wlt-confirm-burst" id="wltConfirmBurst"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>

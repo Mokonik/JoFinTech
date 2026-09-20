@@ -1,0 +1,1057 @@
+:root {
+    /* Apple-system materials: navy/live-red identity carried over from the ledger era,
+       re-expressed as flat soft-shadow chrome + frosted vibrancy instead of neumorphic glow. */
+    --navy-900:#0B1A24; --navy-800:#163143; --navy-700:#234559; --navy-600:#345B6E; --navy-500:#5C7A8A; --navy-300:#9CB2BB; --navy-100:#DCE5E8;
+    --bg:#F2F2F7; --surface-sunken:#E8E8ED; --border-c:rgba(60,60,67,.14); --border-hover:#163143;
+    --text:#0B1A24; --muted:#68686D; --muted-soft:#5C7079; /* was #9CB2BB (~2.2:1 on white); now >=4.5:1 on card + page bg */
+    --acc:#1B3B7A; --acc-ink:#ffffff; --live:#FF3B30; --jo-blue:#2F8FEF;
+    --danger:#D9331F; --danger-bg:#FDE7E3;
+    --success:#1E8A5F; --success-bg:#DEF2E8;
+    --glass:rgba(255,255,255,.72); --glass-strong:rgba(255,255,255,.86); --glass-border:rgba(255,255,255,.6);
+    --card-surface:#FFFFFF;
+    /* Apple-flat shadow system: single soft shadow per elevation step, no light-highlight
+       counterpart — depth comes from blur radius and opacity, not a paired glow. */
+    --sh-sm:0 1px 2px rgba(11,26,36,.05), 0 1px 1px rgba(11,26,36,.04);
+    --sh-md:0 4px 14px rgba(11,26,36,.10), 0 1px 2px rgba(11,26,36,.06);
+    --sh-lg:0 16px 32px rgba(11,26,36,.14), 0 2px 6px rgba(11,26,36,.07);
+    --sh-pressed:inset 0 1px 3px rgba(11,26,36,.14);
+    --radius-xs:9px; --radius-sm:13px; --radius-md:18px; --radius-lg:24px; --radius-pill:999px;
+    /* real "Apple app" technique: -apple-system resolves to actual San Francisco on Apple
+       devices and Segoe UI/Roboto elsewhere, rather than shipping a look-alike webfont. */
+    --sans:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono','Red Hat Mono',monospace; --brand-f:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+    /* motion system: two curves, used everywhere instead of one-off values.
+       --ease-pop: spring overshoot, for things the user just directly touched (taps, toggles, toasts).
+       --ease-glide: smooth settle, for things that move on their own (panels, transitions, reveals). */
+    --ease-pop:cubic-bezier(.36,1.4,.4,1); --ease-glide:cubic-bezier(.2,.8,.3,1);
+    /* type scale: 10 deliberate steps, replaces ad-hoc sizes (10.5px/12.5px/13.5px etc.) that had drifted in one at a time */
+    --fs-3xs:10px; --fs-2xs:11px; --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:15px; --fs-lg:16px; --fs-xl:17px; --fs-2xl:19px; --fs-3xl:22px; --fs-4xl:30px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#000000; --surface-sunken:#1C1C1E; --border-c:rgba(255,255,255,.14); --border-hover:#8CA9B8;
+      --text:#F2F2F7; --muted:#98989D; --muted-soft:#8FA1AB;
+      --acc:#6C9BE8; --acc-ink:#0B1A24; --live:#FF453A; --jo-blue:#63A9F5;
+      --danger:#e5484d; --danger-bg:rgba(229,72,77,.15);
+      --success:#32D74B; --success-bg:rgba(50,215,75,.12);
+      --glass:rgba(28,28,30,.72); --glass-strong:rgba(28,28,30,.9); --glass-border:rgba(255,255,255,.1);
+      --card-surface:#1C1C1E;
+      --sh-sm:0 1px 2px rgba(0,0,0,.5), 0 1px 1px rgba(0,0,0,.4);
+      --sh-md:0 4px 16px rgba(0,0,0,.55);
+      --sh-lg:0 18px 36px rgba(0,0,0,.6);
+      --sh-pressed:inset 0 1px 3px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#000000; --surface-sunken:#1C1C1E; --border-c:rgba(255,255,255,.14); --border-hover:#8CA9B8;
+    --text:#F2F2F7; --muted:#98989D; --muted-soft:#8FA1AB;
+    --acc:#6C9BE8; --acc-ink:#0B1A24; --live:#FF453A; --jo-blue:#63A9F5;
+    --danger:#e5484d; --danger-bg:rgba(229,72,77,.15);
+    --success:#32D74B; --success-bg:rgba(50,215,75,.12);
+    --glass:rgba(28,28,30,.72); --glass-strong:rgba(28,28,30,.9); --glass-border:rgba(255,255,255,.1);
+    --card-surface:#1C1C1E;
+    --sh-sm:0 1px 2px rgba(0,0,0,.5), 0 1px 1px rgba(0,0,0,.4);
+    --sh-md:0 4px 16px rgba(0,0,0,.55);
+    --sh-lg:0 18px 36px rgba(0,0,0,.6);
+    --sh-pressed:inset 0 1px 3px rgba(0,0,0,.6);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { overscroll-behavior-y:contain; /*overflow-x:hidden;*/ }
+  /* Several elements (the wallet stack's shadow-bleed margin, the ambient facet SVG) are
+     deliberately wider than their own parent on purpose — this is the single clipping
+     boundary that stops that intentional bleed from ever becoming real page-level
+     horizontal scroll on a narrow phone, instead of relying on every bleeding element to
+     clip itself correctly. */
+  body { font-family:var(--sans); background:var(--bg); color:var(--text); line-height:1.6; position:relative; overscroll-behavior-y:contain; overflow-x:hidden; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  html[lang="ar"] body { font-family:'Cairo',-apple-system,sans-serif; }
+  /* One Arabic family end-to-end — also covers --mono here, since a Latin monospace
+     font has no Arabic glyphs and was silently falling back to whatever generic system
+     font the browser picked, which is exactly what made small Arabic captions look
+     inconsistent next to their own digits. */
+  html[lang="ar"] { --brand-f:'Cairo',sans-serif; --mono:'Cairo','Red Hat Mono',monospace; }
+  html[dir="rtl"] { direction:rtl; }
+  .hide { display:none !important; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  ::selection { background:var(--acc); color:var(--acc-ink); }
+  * { scrollbar-width:thin; scrollbar-color:var(--navy-500) transparent; }
+  ::-webkit-scrollbar { width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb { background:color-mix(in srgb, var(--navy-500) 55%, transparent); border-radius:99px; }
+  :focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
+
+  .orb { position:fixed; border-radius:50%; filter:blur(100px) brightness(1); z-index:0; pointer-events:none; will-change:transform, filter; }
+  .orb-mood { width:340px; height:340px; top:20%; right:5%; opacity:0; background:var(--danger); transition:background 1s ease, opacity 1s ease, left 1.2s ease, top 1.2s ease; animation:none; }
+  .orb-mood.show { opacity:.26; }
+  :root:not([data-theme="light"]) .orb-mood, :root[data-theme="dark"] .orb-mood { opacity:0; }
+  :root:not([data-theme="light"]) .orb-mood.show, :root[data-theme="dark"] .orb-mood.show { opacity:.28; }
+  @media (prefers-reduced-motion: reduce) { *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } }
+
+  #gate { position:relative; z-index:2; min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .gate-card { background:var(--card-surface); box-shadow:var(--sh-lg); border-radius:var(--radius-lg); padding:36px; width:100%; max-width:340px; text-align:center; }
+
+  /* ---------- generic app modal (replaces confirm/alert/prompt) ---------- */
+  .app-modal-overlay { position:fixed; inset:0; z-index:85; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(11,26,36,.45); backdrop-filter:blur(4px); }
+  .app-modal-card { max-width:360px; text-align:start; padding:24px; }
+  .app-modal-msg { font-size:var(--fs-base); line-height:1.6; margin-bottom:18px; white-space:pre-line; }
+  .app-modal-input { width:100%; padding:10px 12px; border:1px solid var(--border-c); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-size:var(--fs-md); font-family:var(--mono); margin-bottom:16px; text-align:center; }
+  .app-modal-row { display:flex; gap:10px; justify-content:flex-end; }
+  .app-modal-row .button { flex:1; padding:11px; font-size:var(--fs-base); }
+  .gate-card h1 { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-2xl); margin-bottom:6px; }
+  html[lang="ar"] .gate-card h1 { font-weight:600; }
+  .gate-card p { font-size:var(--fs-base); color:var(--muted); margin-bottom:20px; }
+  .gate-card input { width:100%; padding:12px 14px; border:none; border-radius:var(--radius-sm); background:var(--surface-sunken); box-shadow:var(--sh-pressed); color:var(--text); font-size:var(--fs-lg); margin-bottom:12px; text-align:center; letter-spacing:1px; font-family:var(--mono); transition:box-shadow .15s; }
+  /* A wrong code used to only show as a caption below the button — easy to skim past
+     in a pre-event rush. Ringed via shadow, not a border, to stay in the flat-chrome
+     shadow system rather than introduce a border the rest of the app never uses. */
+  .gate-card input.input-error { box-shadow:var(--sh-pressed), 0 0 0 2px var(--danger); }
+  .gate-card button { width:100%; padding:12px; border:none; border-radius:var(--radius-pill); background:var(--acc); color:var(--acc-ink); font-weight:700; font-size:var(--fs-md); cursor:pointer; font-family:var(--sans); box-shadow:var(--sh-sm); transition:filter .15s, box-shadow .1s; }
+  .gate-card button:hover { filter:brightness(1.15); }
+  .gate-card button:active { box-shadow:var(--sh-pressed); }
+  .gate-msg { font-size:var(--fs-sm); color:var(--danger); margin-top:10px; min-height:16px; }
+
+  /* z-index:5, not 2 — header, nav and main all used to share z-index:2, and since
+     each has its own position+z-index (its own stacking context), z-index:30 on the
+     mobile menu dropdown inside header only ever competed within header's own
+     context. Against nav/main as outer siblings, DOM order broke the z-index:2 tie in
+     their favor (later wins), so the dropdown rendered underneath the search bar and
+     toolbar no matter how high its own z-index went. */
+  /* frosted, sticky app bar — the Apple-system nav-bar material: content scrolls under
+     a translucent, blurred bar rather than a plain opaque header. backdrop-filter has
+     to recomposite this blur on every scroll frame for as long as the bar is stuck in
+     view, which is real, continuous GPU cost on exactly the hardware (phones, mid-event)
+     where it's least affordable — see the mobile override below. */
+  header { position:sticky; top:0; z-index:5; padding:16px 28px; background:var(--glass-strong); backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6); border-bottom:1px solid var(--border-c); }
+  .header-content { max-width:1080px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  /* Mobile trades the frosted-glass look for a plain opaque bar: no backdrop-filter to
+     recomposite on every scroll frame, which is the single biggest continuous rendering
+     cost in the whole app on phone-class GPUs during exactly the live, time-pressured
+     scoring flow this product exists for. */
+  @media (max-width:720px) {
+    header { background:var(--card-surface); backdrop-filter:none; -webkit-backdrop-filter:none; }
+  }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand-mark { flex-shrink:0; display:block; border-radius:9px; box-shadow:var(--sh-sm); }
+  /* the JO mark carries navy in its own artwork, so it sits on a fixed white plate
+     rather than directly on the theme background — otherwise the navy in the mark
+     disappears into a navy (dark-mode) background instead of reading as a logo. */
+  .jo-mark-plate { width:34px; height:34px; border-radius:9px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--sh-sm); flex-shrink:0; }
+  .brand h1 { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-xl); }
+  html[lang="ar"] .brand h1 { font-weight:600; }
+  .brand-year { color:var(--jo-blue); font-weight:800; }
+  .brand-sub-line { font-family:var(--mono); font-size:var(--fs-xs); font-weight:600; letter-spacing:.3px; color:var(--muted); margin-top:2px; }
+  .who { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); margin-top:8px; }
+  .controls { display:flex; align-items:center; gap:8px; }
+  .langseg { display:flex; position:relative; overflow:hidden; background:var(--card-surface); font-size:var(--fs-xs); font-weight:700; border-radius:var(--radius-pill); box-shadow:var(--sh-sm); }
+  .langseg .pill { position:absolute; top:2px; bottom:2px; left:2px; width:calc(50% - 2px); background:var(--acc); border-radius:var(--radius-pill); transition:transform .35s var(--ease-pop); z-index:0; }
+  html[dir="rtl"] .langseg .pill { left:auto; right:2px; }
+  .langseg.alt .pill { transform:translateX(100%); }
+  html[dir="rtl"] .langseg.alt .pill { transform:translateX(-100%); }
+  .langseg button { position:relative; z-index:1; background:none; border:none; color:var(--text); padding:9px 13px; cursor:pointer; opacity:.6; font-family:inherit; transition:opacity .2s, color .2s; }
+  .langseg button.active { opacity:1; color:var(--acc-ink); }
+  .icon-btn { width:34px; height:34px; border:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--card-surface); color:var(--text); font-family:inherit; cursor:pointer; box-shadow:var(--sh-sm); transition:transform .5s var(--ease-pop), box-shadow .1s; }
+  .mobile-menu-btn { display:none; border:none; }
+  .icon-btn:active { transform:rotate(180deg); box-shadow:var(--sh-pressed); }
+  .icon-btn svg { width:15px; height:15px; display:block; }
+  .txt-btn { font-family:var(--sans); font-size:var(--fs-sm); font-weight:600; padding:10px 16px; border:none; background:var(--card-surface); color:var(--text); cursor:pointer; border-radius:var(--radius-pill); box-shadow:var(--sh-sm); transition:transform .15s, box-shadow .1s; }
+  .txt-btn:hover { transform:translateY(-1px); }
+  .txt-btn:active { box-shadow:var(--sh-pressed); transform:translateY(0); }
+
+  nav { position:relative; z-index:2; max-width:1080px; margin:16px auto 0; padding:0 28px; }
+  .enav { position:relative; display:inline-flex; gap:4px; background:var(--card-surface); border-radius:var(--radius-pill); padding:4px; box-shadow:var(--sh-sm); }
+  .enav button { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:7px; background:none; border:none; color:var(--muted); font-size:var(--fs-base); font-weight:700; padding:10px 20px; cursor:pointer; font-family:var(--sans); border-radius:var(--radius-pill); transition:color .3s; white-space:nowrap; }
+  .enav button svg { width:16px; height:16px; flex-shrink:0; transition:transform .3s var(--ease-pop); }
+  .enav button.active { color:var(--acc-ink); }
+  .enav button.active svg { transform:scale(1.08); }
+  /* the sliding tile carries the same corner-wash accent the cards use, instead of a
+     flat fill — the nav should read as one system with the wardrobe below it */
+  .eline { position:absolute; top:4px; bottom:4px; height:auto; border-radius:var(--radius-pill); background:radial-gradient(circle at 14% 20%, color-mix(in srgb, var(--jo-blue) 50%, transparent), transparent 62%), var(--acc); box-shadow:var(--sh-sm); transition:left .38s var(--ease-pop), width .38s var(--ease-pop); z-index:0; }
+  @media (max-width:520px) {
+    .enav { display:flex; width:100%; }
+    .enav button { flex:1; padding:10px 8px; font-size:var(--fs-sm); }
+  }
+
+  main { position:relative; z-index:2; max-width:1080px; margin:0 auto; padding:22px 28px 70px; overscroll-behavior-y:contain; }
+  section.hide { display:none; }
+
+  /* ---------- unified live status pill: a floating capsule + a depleting progress
+     bar underneath it, replacing the old ring/text-label/badge treatments everywhere
+     "live" needs to be shown (the judge header, the admin banner, the wallet jump-pin). ---------- */
+  .live-pill { display:inline-flex; align-items:center; gap:8px; background:#0B0B0D; color:#fff; padding:8px 14px 8px 11px; border-radius:var(--radius-pill); box-shadow:0 10px 22px -8px rgba(0,0,0,.4); }
+  :root:not([data-theme="light"]) .live-pill, :root[data-theme="dark"] .live-pill { background:#1C1C1E; box-shadow:0 10px 22px -8px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06); }
+  .live-pill-dot { width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0; animation:pulsedot 1.8s infinite; }
+  .live-pill-label { font-family:var(--sans); font-size:var(--fs-sm); font-weight:600; letter-spacing:-.1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .live-pill-timer, .live-pill-bars { font-family:var(--mono); font-size:var(--fs-sm); font-weight:700; font-variant-numeric:tabular-nums; color:#FF6961; flex-shrink:0; padding-inline-start:8px; margin-inline-start:2px; border-inline-start:1px solid rgba(255,255,255,.22); }
+  .live-pill-bars { display:inline-flex; align-items:flex-end; gap:2px; height:11px; border-inline-start:1px solid rgba(255,255,255,.22); }
+  .live-pill-bars i { width:3px; background:#FF6961; border-radius:1px; animation:barpulse 1.1s ease-in-out infinite; }
+  .live-pill-bars i:nth-child(1){height:40%;animation-delay:0s;} .live-pill-bars i:nth-child(2){height:70%;animation-delay:.15s;}
+  .live-pill-bars i:nth-child(3){height:100%;animation-delay:.3s;} .live-pill-bars i:nth-child(4){height:60%;animation-delay:.45s;}
+  @keyframes barpulse { 0%,100%{opacity:.4;transform:scaleY(.7);} 50%{opacity:1;transform:scaleY(1);} }
+  .live-pill.urgent { animation:urgentpop 1s ease-in-out infinite; }
+  @keyframes urgentpop { 0%,100%{transform:scale(1);} 50%{transform:scale(1.035);} }
+  /* the progress track depletes left-to-right as the countdown runs down — a direct,
+     literal "time is draining" read that a bare mm:ss readout doesn't give at a glance. */
+  .live-progress { display:block; width:100%; height:4px; border-radius:3px; background:var(--border-c); overflow:hidden; margin-top:8px; }
+  /* Depletes via transform, not width, so the tick every second stays off the layout
+     thread — this bar is live for the full length of every countdown, not a one-shot. */
+  .live-progress-fill { display:block; width:100%; height:100%; border-radius:3px; background:linear-gradient(90deg, var(--jo-blue), var(--live)); transform-origin:left; transition:transform 1s linear, background .4s ease; }
+  .live-progress-fill.urgent { background:var(--live); }
+  .live-restrict { font-family:var(--sans); font-size:var(--fs-xs); color:var(--muted); margin-bottom:10px; }
+  .live-feature.timeup, .admin-live-banner.timeup { animation:timeupflash 1s ease-in-out 3; }
+  @keyframes timeupflash { 0%,100%{background:color-mix(in srgb, var(--live) 6%, var(--glass-strong));} 50%{background:color-mix(in srgb, var(--live) 22%, var(--glass-strong));} }
+  .out-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .out-chip { font-size:var(--fs-xs); padding:5px 12px; border-radius:var(--radius-pill); font-family:var(--mono); }
+  .out-chip.adv { color:#fff; background:var(--success); }
+  .out-chip.elim { color:var(--muted); text-decoration:line-through; opacity:.7; background:var(--surface-sunken); }
+  .feed-row { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--border-c); font-size:var(--fs-sm); animation:secfade .3s ease; }
+  .feed-row:last-child { border-bottom:none; }
+  .feed-row .t { color:var(--muted); font-family:var(--mono); font-size:var(--fs-xs); white-space:nowrap; }
+  .crit-row-admin { display:grid; grid-template-columns:1fr 1fr 90px auto; gap:8px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border-c); font-size:var(--fs-sm); }
+  .crit-row-admin input { padding:6px 8px; border:1px solid var(--border-c); border-radius:var(--radius-xs); background:var(--bg); color:var(--text); font-family:var(--sans); font-size:var(--fs-sm); width:100%; }
+  .weight-total { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); margin-top:8px; }
+  .weight-total.off { color:var(--danger); }
+  .bars { display:flex; align-items:flex-end; gap:2px; height:11px; }
+  .bars i { width:3px; background:var(--live); border-radius:1px; animation:barpulse 1.1s ease-in-out infinite; }
+  .bars i:nth-child(1){height:40%;animation-delay:0s;} .bars i:nth-child(2){height:70%;animation-delay:.15s;}
+  .bars i:nth-child(3){height:100%;animation-delay:.3s;} .bars i:nth-child(4){height:60%;animation-delay:.45s;}
+  @keyframes barpulse { 0%,100%{opacity:.4;transform:scaleY(.7);} 50%{opacity:1;transform:scaleY(1);} }
+
+  #listToolbar { display:flex; align-items:center; gap:10px; margin-bottom:4px; min-height:20px; }
+  .search-input { flex:1; min-width:160px; padding:10px 14px; border:none; border-radius:var(--radius-pill); background:var(--surface-sunken); box-shadow:var(--sh-pressed); color:var(--text); font-family:var(--sans); font-size:var(--fs-base); }
+  .progress-txt { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); white-space:nowrap; }
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:10px; margin-bottom:16px; }
+  .stats-grid .stat, .stats .stat { background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); padding:14px 16px; transition:transform .25s, box-shadow .25s; }
+  .stats-grid .stat:hover, .stats .stat:hover { transform:translateY(-3px); box-shadow:var(--sh-md); }
+  .stats-grid .stat .l, .stats .stat .l { font-family:var(--mono); font-size:var(--fs-3xs); text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:7px; }
+  .stats-grid .stat .v, .stats .stat .v { font-family:var(--sans); font-weight:800; font-size:24px; font-variant-numeric:tabular-nums; }
+  .pulse-dot { width:7px; height:7px; border-radius:50%; background:var(--live); display:inline-block; margin-inline-end:6px; animation:pulsedot 2s infinite; vertical-align:middle; }
+  .dot-static { width:7px; height:7px; border-radius:50%; background:var(--live); display:inline-block; margin-inline-end:6px; vertical-align:middle; }
+  .detail-live-tag { display:flex; align-items:center; font-family:var(--mono); font-size:var(--fs-2xs); text-transform:uppercase; letter-spacing:1.5px; color:var(--live); margin-bottom:10px; }
+  @keyframes pulsedot { 0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--live) 55%, transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  .team-list-item.live-now { box-shadow:var(--sh-sm), 0 0 0 1.5px color-mix(in srgb, var(--live) 55%, transparent); }
+  /* flat Apple list-row card: no gradient wash, no border-accent — identity lives in the
+     avatar's own tint (avatarHtml already colors it from the team's --tc), the row itself
+     stays a plain surface so a page of them reads as one calm list, not a wall of tinted tiles. */
+  .team-list-item { display:flex; align-items:center; gap:14px; background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:8px; cursor:pointer; transition:transform .2s var(--ease-pop), box-shadow .2s; }
+  .team-list-item:hover { transform:translateY(-1px); box-shadow:var(--sh-md); }
+  .team-list-item:active { transform:scale(.99); }
+  .team-list-item.locked { cursor:not-allowed; opacity:.6; }
+  .team-list-item.locked:hover { transform:none; box-shadow:var(--sh-sm); }
+  .team-list-item .idx { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); width:22px; }
+  .team-list-item .tname { font-weight:600; font-size:var(--fs-md); flex:1; }
+  .team-list-item .tcat { font-size:var(--fs-xs); color:var(--muted); }
+  .team-list-item .status { font-family:var(--sans); font-weight:700; font-size:var(--fs-sm); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .status.done { background:var(--success); color:#fff; }
+  .status.pending { background:var(--surface-sunken); color:var(--muted); }
+  /* locked/not-live: an icon + a real phrase instead of a bare opacity fade, so "why can't
+     I tap this" is answered on the row itself rather than left to guesswork. */
+  .status-locked { display:flex; align-items:center; gap:5px; font-family:var(--sans); font-size:var(--fs-xs); font-weight:600; color:var(--muted); background:var(--surface-sunken); padding:6px 10px; border-radius:var(--radius-pill); flex-shrink:0; }
+
+  .detail-head { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .btn-circle { width:38px; height:38px; border-radius:50%; border:none; background:var(--card-surface); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text); box-shadow:var(--sh-sm); transition:transform .2s var(--ease-pop), box-shadow .2s; flex-shrink:0; padding:0; }
+  .btn-circle:hover { box-shadow:var(--sh-md); }
+  .btn-circle:active { transform:scale(.9); box-shadow:var(--sh-pressed); }
+  .btn-circle[disabled] { opacity:.35; cursor:not-allowed; pointer-events:none; }
+  .btn-circle svg { width:16px; height:16px; display:block; }
+  .btn-circle.back-btn:hover { transform:translateX(-3px); }
+  html[dir="rtl"] .btn-circle.back-btn:hover { transform:translateX(3px); }
+  html[dir="rtl"] .btn-circle.back-btn svg { transform:scaleX(-1); }
+  /* fixed pixel radius, not a percentage — .detail-card can be 2000px+ tall with 10 criteria stacked,
+     and an unsized radial-gradient defaults to "farthest-corner", which on a tall scrolling card put
+     the fade-to-transparent point wherever that huge diagonal happened to land (often mid-list, in the
+     middle of a criterion, reading as a hard cutoff). A fixed radius keeps the wash a true corner accent
+     near the header, always fully faded out well before the scrollable content — never mid-content. */
+  .detail-card { position:relative; overflow:hidden; background:radial-gradient(circle 340px at 100% 0%, color-mix(in srgb, var(--team-c, var(--acc)) 22%, transparent) 0%, color-mix(in srgb, var(--team-c, var(--acc)) 6%, transparent) 55%, transparent 100%), var(--card-surface); box-shadow:var(--sh-lg); border-radius:var(--radius-lg); padding:24px; }
+  .detail-card > * { position:relative; z-index:1; }
+  .detail-card h2 { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-2xl); margin-bottom:4px; }
+  .detail-cat { font-size:var(--fs-sm); color:var(--muted); margin-bottom:14px; }
+  /* fades to transparent at the bottom instead of ending in a hard-edged box, so it dissolves into
+     the card's own corner-wash gradient rather than sitting on top of it as a flat rectangle. */
+  .team-info { background:linear-gradient(to bottom, var(--surface-sunken), transparent); border-radius:var(--radius-md); padding:14px 16px 22px; margin-bottom:16px; }
+  .team-info-l { font-family:var(--mono); font-size:var(--fs-3xs); text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px; }
+  .team-info-v { font-size:var(--fs-base); line-height:1.6; white-space:pre-line; }
+  .toggle { position:relative; display:inline-flex; width:38px; height:22px; flex-shrink:0; }
+  .toggle input { position:absolute; opacity:0; width:100%; height:100%; margin:0; cursor:pointer; z-index:1; }
+  .toggle-track { position:absolute; inset:0; background:var(--surface-sunken); box-shadow:var(--sh-pressed); border-radius:999px; transition:background .2s; }
+  .toggle-thumb { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:var(--sh-sm); transition:transform .25s var(--ease-pop); }
+  .toggle input:checked ~ .toggle-track { background:var(--acc); }
+  .toggle input:checked ~ .toggle-track .toggle-thumb { transform:translateX(16px); }
+  .toggle-row { display:flex; align-items:center; gap:10px; }
+  .detail-total { display:flex; align-items:baseline; gap:8px; background:radial-gradient(circle at 90% 15%, color-mix(in srgb, var(--live) 22%, transparent), transparent 60%), var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:20px; }
+  .detail-total .n { font-family:var(--sans); font-weight:800; font-size:var(--fs-3xl); color:var(--live); font-variant-numeric:tabular-nums; }
+  .detail-total .l { font-size:var(--fs-xs); color:var(--muted); }
+  .crit-item { padding:20px 0; transition:opacity .2s; }
+  .crit-item:first-of-type { padding-top:6px; }
+  .crit-check { margin-inline-start:7px; color:var(--success); vertical-align:middle; }
+  .crit-check path { stroke-dasharray:24; stroke-dashoffset:24; animation:drawcheck .4s ease forwards; }
+  .crit-check.no-anim path { stroke-dashoffset:0; animation:none; }
+  @keyframes drawcheck { to { stroke-dashoffset:0; } }
+  .crit-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
+  .crit-name { font-weight:700; font-size:var(--fs-md); }
+  .crit-weight { font-family:var(--mono); font-size:var(--fs-xs); font-weight:600; padding:3px 9px; border-radius:var(--radius-pill); background:var(--surface-sunken); color:var(--muted); }
+  .crit-desc { font-size:var(--fs-sm); color:var(--muted); margin-bottom:12px; }
+  .num-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .num-row button { width:32px; height:32px; border:none; border-radius:50%; font-size:var(--fs-sm); font-weight:700; cursor:pointer; font-family:var(--mono); transition:transform .12s, background .15s, color .15s, box-shadow .1s; color:var(--text); background:var(--card-surface); box-shadow:var(--sh-sm); }
+  .num-row button:hover { box-shadow:var(--sh-md); }
+  .num-row button:active { transform:scale(.86); box-shadow:var(--sh-pressed); }
+  .num-row button.sel { color:#fff; transform:scale(1.08); box-shadow:0 4px 14px -4px var(--btn-glow, transparent); }
+  .num-row button[disabled] { opacity:.4; cursor:not-allowed; }
+  .notes-field[readonly] { opacity:.7; }
+
+  /* ---------- team avatars ---------- */
+  .team-avatar { border-radius:30%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; flex-shrink:0; font-family:var(--sans); }
+  .judge-chip { display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); }
+  .judge-chip .team-avatar { border-radius:50%; font-size:var(--fs-2xs); }
+
+  /* ---------- shake-to-warn ---------- */
+  @keyframes shakeit { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 60%{transform:translateX(-3px);} 80%{transform:translateX(3px);} }
+  .crit-item.warn-shake { animation:shakeit .4s ease; }
+  .crit-item.warn-flash { background:color-mix(in srgb, var(--danger) 8%, transparent); border-radius:var(--radius-sm); }
+
+  /* ---------- floating ring + hero total ---------- */
+  .session-banner { position:relative; z-index:2; max-width:1080px; margin:14px auto 0; padding:10px 28px; display:flex; align-items:center; gap:12px; font-size:var(--fs-sm); background:radial-gradient(circle at 6% 50%, color-mix(in srgb, var(--danger) 20%, transparent), transparent 60%), var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); color:var(--text); }
+  html[dir="rtl"] .session-banner { background:radial-gradient(circle at 94% 50%, color-mix(in srgb, var(--danger) 20%, transparent), transparent 60%), var(--card-surface); }
+  @media (max-width:720px) { .session-banner { padding-left:16px; padding-right:16px; } }
+  .session-banner button { margin-inline-start:auto; background:none; border:none; color:var(--muted); font-size:var(--fs-2xl); cursor:pointer; line-height:1; }
+  .dc-header { margin-bottom:2px; }
+
+  /* ---------- card-flip criteria deck (mobile) ---------- */
+  .flipviewport { overflow:hidden; border-radius:var(--radius-md); touch-action:pan-y; }
+  .fliptrack { display:flex; transition:transform .35s var(--ease-glide); }
+  .flipcard { min-width:100%; padding:6px 2px 16px; }
+  .flipdots { display:flex; gap:6px; justify-content:center; margin:12px 0; }
+  .flipdots i { width:6px; height:6px; border-radius:50%; background:var(--border-c); display:block; transition:all .25s; }
+  .flipdots i.on { background:var(--acc); width:18px; border-radius:4px; }
+  .flipnav { display:flex; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .notes-field { width:100%; border:none; border-radius:var(--radius-sm); padding:10px 12px; font-size:var(--fs-base); background:var(--surface-sunken); box-shadow:var(--sh-pressed); color:var(--text); resize:vertical; min-height:60px; margin-top:16px; font-family:var(--sans); }
+  .save-row { display:flex; justify-content:space-between; align-items:center; margin-top:20px; }
+  .save-btn { background:var(--acc); color:var(--acc-ink); border:none; border-radius:var(--radius-pill); padding:12px 26px; font-weight:700; font-size:var(--fs-base); cursor:pointer; font-family:var(--sans); box-shadow:var(--sh-sm); transition:filter .15s, box-shadow .1s; }
+  .save-btn:hover { filter:brightness(1.15); }
+  .save-btn:active { box-shadow:var(--sh-pressed); }
+  .save-err { font-size:var(--fs-sm); color:var(--danger); }
+
+  .my-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; width:100%; border:none; background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:8px; font-family:inherit; text-align:start; cursor:pointer; transition:transform .2s var(--ease-pop), box-shadow .2s; }
+  .my-row:hover { transform:translateY(-1px); box-shadow:var(--sh-md); }
+  .my-row:active { transform:scale(.99); }
+  .my-row .nm { font-weight:700; font-size:var(--fs-md); }
+  .my-row .nt { font-size:var(--fs-xs); color:var(--muted); margin-top:3px; }
+  .my-row .sc { font-family:var(--sans); font-weight:800; font-size:var(--fs-xl); color:var(--acc); font-variant-numeric:tabular-nums; }
+
+  /* ---------- Admin: sidebar shell ---------- */
+  .admin-live-banner { position:relative; overflow:hidden; background:radial-gradient(circle at 94% 8%, color-mix(in srgb, var(--live) 26%, transparent), transparent 60%), var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-lg); padding:14px 18px; margin-bottom:18px; transition:box-shadow .3s ease; }
+  html[dir="rtl"] .admin-live-banner { background:radial-gradient(circle at 6% 8%, color-mix(in srgb, var(--live) 26%, transparent), transparent 60%), var(--card-surface); }
+  .admin-live-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .admin-live-banner .admin-live-name { font-weight:700; font-size:var(--fs-base); }
+  .admin-live-banner .admin-live-manage { margin-inline-start:auto; }
+  .admin-live-banner .live-progress { margin-top:12px; }
+  .admin-live-manage { font-family:var(--sans); font-size:var(--fs-xs); font-weight:700; color:var(--live); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0; }
+  .admin-shell { display:flex; gap:20px; align-items:flex-start; }
+  .admin-sidebar { width:220px; flex-shrink:0; background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-lg); padding:14px; position:sticky; top:16px; display:flex; flex-direction:column; gap:14px; }
+  .admin-nav-label { font-family:var(--mono); font-size:var(--fs-3xs); text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:4px 10px; }
+  .admin-nav-item { display:block; width:100%; text-align:start; background:none; border:none; color:var(--muted); font-family:var(--sans); font-size:var(--fs-base); font-weight:600; padding:9px 12px; border-radius:var(--radius-sm); cursor:pointer; transition:background .2s, color .2s; margin-bottom:2px; }
+  .admin-nav-item:hover { background:var(--surface-sunken); color:var(--text); }
+  .admin-nav-item.active { background:var(--acc); color:var(--acc-ink); }
+  .admin-main { flex:1; min-width:0; display:flex; flex-direction:column; gap:16px; }
+  /* entrance handled by crossfadeSwap() in app.js now — no per-element animation here */
+  @keyframes secfade { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Admin: slide-in edit drawer ---------- */
+  .admin-drawer-backdrop { position:fixed; inset:0; z-index:60; background:rgba(11,26,36,.45); opacity:0; pointer-events:none; transition:opacity .32s var(--ease-glide); }
+  .admin-drawer-backdrop.open { opacity:1; pointer-events:auto; }
+  .admin-drawer { position:fixed; top:0; right:0; bottom:0; width:420px; max-width:92vw; z-index:61; transform:translateX(100%); transition:transform .32s var(--ease-glide); background:var(--card-surface); box-shadow:var(--sh-lg); display:flex; flex-direction:column; padding:20px; overflow-y:auto; }
+  .admin-drawer.open { transform:translateX(0); }
+  html[dir="rtl"] .admin-drawer { right:auto; left:0; transform:translateX(-100%); }
+  html[dir="rtl"] .admin-drawer.open { transform:translateX(0); }
+  .admin-drawer-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .admin-drawer-header h2 { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-lg); }
+  .admin-drawer-close { background:none; border:none; font-size:22px; line-height:1; color:var(--muted); cursor:pointer; padding:4px 9px; border-radius:var(--radius-sm); transition:background .15s, color .15s; }
+  .admin-drawer-close:hover { background:var(--surface-sunken); color:var(--text); }
+  @media (max-width:900px) {
+    .admin-drawer { position:static; width:100%; max-width:none; height:auto; transform:none; box-shadow:var(--sh-md); border-radius:var(--radius-lg); margin-top:4px; display:none; }
+    .admin-drawer.open { display:flex; }
+    .admin-drawer-backdrop { display:none; }
+  }
+  .admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .admin-form-full { grid-column:1 / -1; }
+  .card { background:var(--card-surface); box-shadow:var(--sh-md); border-radius:var(--radius-lg); padding:20px; transition:box-shadow .2s; }
+  .admin-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .card h2 { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-lg); }
+  table { width:100%; border-collapse:collapse; font-size:var(--fs-base); }
+  th { text-align:start; padding:8px 6px; font-size:var(--fs-xs); color:var(--muted); border-bottom:1px solid var(--border-c); font-family:var(--mono); text-transform:uppercase; }
+  td { padding:8px 6px; border-bottom:1px solid var(--border-c); }
+  .admin-form { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .admin-form input, .admin-form select, .admin-form textarea { padding:10px 12px; border:none; border-radius:var(--radius-sm); font-size:var(--fs-base); background:var(--surface-sunken); box-shadow:var(--sh-pressed); color:var(--text); font-family:var(--sans); }
+  .combo-wrap { position:relative; }
+  .combo-wrap input { width:100%; cursor:pointer; }
+  .combo-list { position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:20; max-height:240px; overflow-y:auto; background:var(--card-surface); border-radius:var(--radius-sm); box-shadow:var(--sh-md); padding:6px; }
+  .combo-opt { padding:8px 10px; border-radius:var(--radius-xs); font-size:var(--fs-base); cursor:pointer; }
+  .combo-opt:hover { background:var(--surface-sunken); }
+  .combo-empty { padding:8px 10px; font-size:var(--fs-xs); color:var(--muted); }
+  .admin-checkbox { display:flex; align-items:center; gap:8px; font-size:var(--fs-base); }
+  .button { padding:9px 16px; border:none; border-radius:var(--radius-pill); background:var(--card-surface); color:var(--text); font-size:var(--fs-sm); font-weight:600; cursor:pointer; font-family:var(--sans); box-shadow:var(--sh-sm); transition:transform .15s, box-shadow .1s; }
+  .button:hover { box-shadow:var(--sh-md); }
+  .button:active { transform:scale(.95); box-shadow:var(--sh-pressed); }
+  .button-primary { background:var(--acc); color:var(--acc-ink); }
+  .button-danger { background:var(--danger-bg); color:var(--danger); }
+  .notes-preview { font-size:var(--fs-xs); color:var(--muted); max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .live-tag { color:var(--live); font-weight:700; font-family:var(--mono); font-size:var(--fs-xs); }
+
+  .sb-team-row { display:flex; align-items:center; gap:14px; padding:13px 16px; margin-bottom:8px; background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-md); cursor:pointer; transition:transform .2s, box-shadow .2s; }
+  .sb-team-row:hover { transform:translateX(3px); box-shadow:var(--sh-md); }
+  .sb-team-row .idx { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); width:22px; }
+  .sb-team-row .tname { font-weight:700; font-size:var(--fs-md); }
+  .sb-team-row .tcat { font-size:var(--fs-xs); color:var(--muted); }
+  .sb-team-row .sc { font-family:var(--sans); font-weight:800; font-size:var(--fs-xl); color:var(--acc); margin-inline-start:auto; font-variant-numeric:tabular-nums; }
+  .sb-detail { display:none; padding:16px; background:var(--surface-sunken); border-radius:var(--radius-md); margin:-4px 0 12px; }
+  .sb-detail.show { display:block; }
+  .sb-crit-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border-c); }
+  .sb-crit-grid .ci .l { font-size:var(--fs-2xs); color:var(--muted); margin-bottom:3px; }
+  .sb-crit-grid .ci .v { font-family:var(--mono); font-weight:700; font-size:var(--fs-lg); color:var(--acc); }
+  .sb-judge-block { padding:10px 0; border-top:1px solid var(--border-c); }
+  .sb-judge-block:first-of-type { border-top:none; }
+  .sb-judge-name { font-weight:700; font-size:var(--fs-base); margin-bottom:10px; display:flex; justify-content:space-between; align-items:baseline; }
+  .sb-judge-total { font-family:var(--mono); font-weight:700; font-size:var(--fs-lg); color:var(--acc); font-variant-numeric:tabular-nums; }
+  .sb-judge-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px 14px; }
+  .jc-item .jc-l { font-size:var(--fs-2xs); color:var(--muted); margin-bottom:2px; }
+  .jc-item .jc-v { font-family:var(--mono); font-weight:700; font-size:var(--fs-base); }
+  .sb-judge-notes { font-size:var(--fs-sm); color:var(--muted); font-style:italic; margin-top:8px; }
+  .table-wrap { overflow-x:auto; }
+  .virt-header, .virt-row { display:grid; grid-template-columns:1.3fr 1fr .5fr .5fr 1.5fr auto; gap:8px; align-items:center; padding:0 6px; }
+  .virt-row > div { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  .virt-header { font-family:var(--mono); font-size:var(--fs-xs); text-transform:uppercase; color:var(--muted); padding:8px 6px; border-bottom:1px solid var(--border-c); }
+  .virt-viewport { max-height:440px; overflow-y:auto; position:relative; }
+  .scroll-shadow-top { position:sticky; top:0; height:12px; margin-bottom:-12px; pointer-events:none; background:linear-gradient(to bottom, rgba(11,26,36,.12), transparent); opacity:0; transition:opacity .2s; z-index:4; }
+  :root:not([data-theme="light"]) .scroll-shadow-top, :root[data-theme="dark"] .scroll-shadow-top { background:linear-gradient(to bottom, rgba(0,0,0,.35), transparent); }
+  .scroll-shadow-top.show { opacity:1; }
+  .virt-row { height:44px; border-bottom:1px solid var(--border-c); font-size:var(--fs-sm); }
+
+  /* ---------- pipeline overview (real data) ---------- */
+  .flowlab { overflow-x:auto; padding:8px 4px 4px; }
+  .flowcanvas { position:relative; width:900px; height:190px; margin:0 auto; }
+  .flowcanvas svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+  .flowcanvas path { fill:none; stroke:var(--border-c); stroke-width:2; stroke-dasharray:1 8; stroke-linecap:round; }
+  .flowcanvas path.on { stroke:var(--acc); }
+  .flowcanvas path.warn { stroke:var(--live); }
+  .fdot { position:absolute; width:6px; height:6px; border-radius:50%; background:var(--muted-soft); transform:translate(-50%,-50%); }
+  .fnode { position:absolute; transform:translate(-50%,-50%); width:150px; background:var(--glass-strong); border:1px solid var(--glass-border); border-radius:var(--radius-md); box-shadow:var(--sh-sm); padding:12px 14px; cursor:pointer; transition:box-shadow .2s, transform .2s; }
+  .fnode:hover { box-shadow:var(--sh-md); transform:translate(-50%,-50%) translateY(-2px); }
+  .fnode .badge { display:inline-flex; align-items:center; font-size:var(--fs-3xs); font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding:2px 8px; border-radius:var(--radius-pill); background:var(--surface-sunken); color:var(--muted); margin-bottom:8px; }
+  .fnode .ft { font-size:var(--fs-sm); font-weight:700; } .fnode .fs { font-size:var(--fs-2xs); color:var(--muted); margin-top:2px; }
+  .fnode.current { box-shadow:var(--sh-md), 0 0 0 2px var(--acc); }
+  .fnode.current .badge { background:var(--acc); color:var(--acc-ink); }
+  .fnode.pending { background:var(--surface-sunken); border:1px dashed var(--border-c); box-shadow:none; opacity:.7; }
+  .fnode.pending .badge { background:none; border:1px dashed var(--muted-soft); color:var(--muted); }
+  .fnode.warn { background:color-mix(in srgb, var(--live) 12%, var(--glass-strong)); border-color:var(--live); }
+  .fnode.warn .badge { background:var(--live); color:#fff; }
+
+  /* ---------- staggered list entrance ---------- */
+  @keyframes cardin { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  .team-list-item, .sb-team-row, .my-row { animation:cardin .38s var(--ease-glide) both; animation-delay:calc(var(--i, 0) * 45ms); }
+
+  /* ---------- skeleton loading ---------- */
+  .skel { background:linear-gradient(100deg, var(--surface-sunken) 30%, color-mix(in srgb, var(--surface-sunken) 40%, var(--glass-border)) 50%, var(--surface-sunken) 70%); background-size:200% 100%; animation:skelshine 1.4s ease-in-out infinite; border-radius:var(--radius-md); }
+  @keyframes skelshine { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+  .skel-row { height:58px; margin-bottom:8px; }
+  .skel-stat { height:74px; }
+
+  /* ---------- live urgency ---------- */
+  /* This runs continuously for the final 60 seconds of every timer, on every judge's
+     phone, potentially dozens of times across one event — the animated box-shadow it
+     replaced repainted the whole card twice a second for that full minute each time.
+     A shared ::after "ping" ring instead: the ring's own box-shadow is set once
+     (a paint), and only its opacity/scale animate from there on (compositor-only). */
+  .urgent-pingable { position:relative; }
+  .urgent-pingable.urgent::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--live) 45%, transparent);
+    opacity:0; animation:urgentPing 1s ease-in-out infinite;
+  }
+  @keyframes urgentPing { 0%,100%{opacity:0; transform:scale(1);} 50%{opacity:1; transform:scale(1.012);} }
+  @media (prefers-reduced-motion: reduce) { .urgent-pingable.urgent::after { animation:none; opacity:1; } }
+  .live-feature.urgent .live-pill-timer, .admin-live-banner.urgent .live-pill-timer { animation:urgenttext .6s ease-in-out infinite; }
+  @keyframes urgenttext { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+
+  /* ---------- admin sidebar sliding indicator ---------- */
+  .admin-sidebar { position:relative; }
+  .admin-nav-item { position:relative; z-index:1; background:none !important; color:var(--muted); }
+  .admin-nav-item.active { color:var(--acc-ink); }
+  .admin-nav-item:hover:not(.active) { background:var(--surface-sunken) !important; }
+  .admin-navline { position:absolute; z-index:0; background:var(--acc); border-radius:var(--radius-sm); transition:top .32s var(--ease-pop), height .32s var(--ease-pop), left .32s var(--ease-pop), width .32s var(--ease-pop); pointer-events:none; }
+  @media (max-width:900px) { .admin-navline { display:none; } .admin-nav-item.active { background:var(--acc) !important; } }
+
+  /* ---------- featured live team card ---------- */
+  /* borderless, dual-corner wash: live-red bleeds from the top-right, ink accent from the bottom-left,
+     the plain card surface fills the middle. no blur — the gradient + double shadow do the work instead. */
+  .live-feature { position:relative; overflow:hidden; background:radial-gradient(circle at 88% 6%, color-mix(in srgb, var(--live) 26%, transparent), transparent 60%), radial-gradient(circle at 6% 100%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 55%), var(--card-surface); box-shadow:var(--sh-lg); border-radius:var(--radius-lg); padding:20px; margin-bottom:18px; cursor:pointer; transition:transform .25s var(--ease-pop), box-shadow .3s ease; }
+  html[dir="rtl"] .live-feature { background:radial-gradient(circle at 12% 6%, color-mix(in srgb, var(--live) 26%, transparent), transparent 60%), radial-gradient(circle at 94% 100%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 55%), var(--card-surface); }
+  .live-feature:hover { transform:translateY(-2px); }
+  .live-feature > *:not(.lf-orbit) { position:relative; z-index:1; }
+  /* orbit rings — decorative ornament, not a boundary: the gradient wash above already carries the
+     accent signal, so these can sit at visible-but-secondary opacity without reading as a border. */
+  .lf-orbit { position:absolute; z-index:0; pointer-events:none; border-radius:50%; border-color:color-mix(in srgb, var(--live) 30%, transparent); border-style:solid; }
+  .lf-orbit.o1 { width:170px; height:170px; right:-50px; top:-60px; border-width:1.5px; }
+  .lf-orbit.o2 { width:110px; height:110px; right:-20px; top:-20px; border-width:1px; border-color:color-mix(in srgb, var(--live) 22%, transparent); }
+  html[dir="rtl"] .lf-orbit.o1 { right:auto; left:-50px; }
+  html[dir="rtl"] .lf-orbit.o2 { right:auto; left:-20px; }
+  .live-feature .lf-top { display:flex; align-items:center; margin-bottom:14px; }
+  .live-feature .live-progress { margin:0 0 16px; }
+  .live-feature .lf-identity { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .live-feature .lf-avatar-wrap { position:relative; flex-shrink:0; }
+  .live-feature .lf-check { position:absolute; bottom:-2px; inset-inline-end:-2px; width:18px; height:18px; border-radius:50%; background:var(--success); color:#fff; font-size:10px; display:flex; align-items:center; justify-content:center; border:2px solid var(--glass-strong); }
+  .live-feature .lf-name { font-family:var(--brand-f); font-weight:700; font-size:var(--fs-2xl); margin-bottom:2px; }
+  .live-feature .lf-cat { font-size:var(--fs-sm); color:var(--muted); }
+  .live-feature .lf-cta { display:inline-flex; align-items:center; gap:6px; background:var(--live); color:#fff; border:none; border-radius:var(--radius-pill); padding:10px 20px; font-weight:700; font-size:var(--fs-base); font-family:var(--sans); cursor:pointer; box-shadow:var(--sh-sm); transition:box-shadow .1s; }
+  .live-feature .lf-cta:active { box-shadow:var(--sh-pressed); }
+  .below-live-label { font-family:var(--mono); font-size:var(--fs-3xs); text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:4px 0 8px; }
+
+  /* ---------- number roll-up ---------- */
+  .detail-total .n, .my-row .sc, .sb-team-row .sc { transition:none; }
+
+  /* ---------- sticky scoring summary ---------- */
+  /* flat, plain card-surface — the .detail-card background wash is now bounded to a fixed radius near
+     the header (see .detail-card), so by the time the sticky bar is in view there's nothing left to
+     clash with. No tint, no fade hack needed once the thing underneath is actually predictable. */
+  .sticky-summary { position:sticky; top:8px; z-index:5; display:flex; align-items:center; gap:10px; background:var(--card-surface); box-shadow:var(--sh-sm); border-radius:var(--radius-pill); padding:9px 16px; margin-bottom:14px; font-size:var(--fs-sm); }
+  .sticky-summary .ss-n { font-family:var(--sans); font-weight:800; font-size:var(--fs-lg); color:var(--live); font-variant-numeric:tabular-nums; }
+  .sticky-summary .ss-p { margin-inline-start:auto; color:var(--muted); font-family:var(--mono); font-size:var(--fs-xs); }
+
+  .sheet-grip { display:none; }
+  #detailScrollShadow { display:none; }
+  .sheet-open #detailScrollShadow { display:block; }
+
+
+  /* ---------- mobile bottom sheet ---------- */
+  @media (max-width:720px) {
+    .sheet-open #teamDetailWrap { position:fixed; inset:0; z-index:50; display:flex; align-items:flex-end; background:rgba(11,26,36,.4); animation:sheetdim .25s ease; }
+    .sheet-open #teamDetailWrap .detail-card { width:100%; max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; border-radius:var(--radius-lg) var(--radius-lg) 0 0; box-shadow:var(--sh-lg); }
+    .sheet-open #teamDetailWrap .detail-card.sheet-anim-in { animation:sheetup .32s var(--ease-glide); }
+    .sheet-open #teamDetailWrap .detail-head { display:none; }
+    .sheet-open .sheet-grip { display:flex; align-items:center; justify-content:center; width:100%; height:30px; margin:0 0 8px; touch-action:none; cursor:grab; }
+    .sheet-open .sheet-grip::before { content:''; width:36px; height:4px; border-radius:2px; background:var(--border-c); }
+  }
+  @keyframes sheetup { from{transform:translateY(100%);} to{transform:translateY(0);} }
+  @keyframes sheetdim { from{opacity:0;} to{opacity:1;} }
+
+  /* ---------- empty state illustration ---------- */
+  .empty-illus { text-align:center; padding:50px 20px; color:var(--muted); }
+  .empty-illus svg { margin-bottom:14px; }
+  .empty-illus p { font-size:var(--fs-base); margin-bottom:16px; }
+
+  @media (max-width:900px) {
+    .admin-shell { flex-direction:column; }
+    .admin-sidebar { width:100%; position:static; flex-direction:row; flex-wrap:wrap; }
+    .admin-nav-label { display:none; }
+  }
+  @media (max-width:720px) {
+    .admin-grid { grid-template-columns:1fr; }
+    header, nav, main { padding-left:16px; padding-right:16px; }
+    /* The header used to run brand+subtitle, judge identity, and lang/theme/sign-out
+       as three full-height stacked rows before the tab nav even started — on a phone
+       that ran past a full screen before any team card was visible, and the initial
+       scroll needed to reach the cards could land ON the card stack's own touch
+       handler instead of the page. Language/theme/sign-out (set-once-and-forget
+       controls, not things judged mid-event) collapse into one menu button instead;
+       Score/My scores/Admin stay one tap each, just tighter. */
+    header { padding-top:12px; }
+    .header-content { gap:10px; }
+    .brand h1 { font-size:var(--fs-lg); }
+    .brand-sub-line { display:none; }
+    .jo-mark-plate { width:26px; height:26px; }
+    .who { margin-top:7px; font-size:var(--fs-2xs); }
+    .mobile-menu-btn { display:flex; }
+    /* display:none on the whole container, not just its children — #headerControls
+       was still hiding its children but staying display:flex itself, which meant it
+       kept participating in .header-content's justify-content:space-between as a
+       near-empty flex item. With 3 items instead of 2, space-between treated
+       #mobileMenuBtn as a MIDDLE item and pulled it in from the true right edge —
+       the menu button visibly sat in a different (wrong) spot before being tapped
+       than after, when this element leaves the flex flow entirely via position:absolute.
+       Each child's own display (langseg/icon-btn's own `display:flex`, the button's
+       default) is what makes them appear once this is display:flex again. */
+    #headerControls { display:none; }
+    #headerControls.menu-open {
+      display:flex; flex-direction:column; align-items:stretch; gap:8px;
+      position:absolute; top:100%; right:16px; margin-top:8px; padding:10px;
+      background:var(--card-surface); border-radius:var(--radius-md); box-shadow:var(--sh-md); z-index:30;
+    }
+    /* .header-content is a flex row that follows document direction, so the trigger
+       button+panel sit on the LEFT in RTL — the panel's own right:16px would still
+       pull it toward the right regardless, detaching it from the button above it. */
+    html[dir="rtl"] #headerControls.menu-open { right:auto; left:16px; }
+    .txt-btn { padding:8px 10px; }
+    /* Was 32px — smaller than desktop, on the exact devices touch targets matter most.
+       This is the always-visible mobile-menu trigger (and, once open, the theme
+       toggle inside it), both real controls a judge taps mid-event; 44px matches the
+       platform's own minimum rather than shrinking further for the sake of it. */
+    .icon-btn { width:44px; height:44px; padding:0; }
+    .icon-btn svg { width:18px; height:18px; }
+    .langseg button { padding:8px 10px; font-size:var(--fs-xs); }
+    .enav button { font-size:var(--fs-sm); padding:8px 14px; }
+    .detail-card, .card { padding:16px; }
+    .num-row { gap:9px; }
+    .num-row button { width:46px; height:46px; font-size:var(--fs-lg); }
+    .btn-circle { width:44px; height:44px; }
+    .btn-circle svg { width:19px; height:19px; }
+    .crit-name { font-size:var(--fs-base); }
+    table { font-size:var(--fs-sm); }
+    th, td { padding:7px 4px; }
+    .sb-crit-grid, .sb-judge-grid { grid-template-columns:repeat(2, 1fr); }
+  }
+  @media (max-width:420px) {
+    .sb-crit-grid, .sb-judge-grid { grid-template-columns:1fr 1fr; }
+    .stats-grid .stat .v, .stats .stat .v { font-size:var(--fs-2xl); }
+  }
+
+  /* ---------- print (scoreboard export) ---------- */
+  @media print {
+    .orb, header, nav, .admin-sidebar, .toast, #ackOverlay, #gate, #appModal { display:none !important; }
+    body, .bg, main { background:#fff !important; }
+    .admin-shell { display:block !important; }
+    .card { box-shadow:none !important; backdrop-filter:none !important; background:#fff !important; border:1px solid #ccc !important; break-inside:avoid; }
+    #printScoreboardBtn, #exportScoreboardBtn, #sbSortBtn { display:none !important; }
+    .sb-detail { display:block !important; }
+    .admin-section:not(#adminSec-scoreboard) { display:none !important; }
+  }
+
+  /* ---------- toast ---------- */
+  .toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(16px) scale(.92); opacity:0; pointer-events:none; transition:opacity .3s ease, transform .45s var(--ease-pop); background:var(--acc); color:var(--acc-ink); padding:10px 20px; border-radius:var(--radius-pill); font-size:var(--fs-sm); font-weight:700; z-index:60; box-shadow:var(--sh-md); }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+
+  /* ==================================================================
+     Wallet view — card-stack judging UI, every selector namespaced
+     "wlt-" so nothing here can collide with the classic view it sits
+     alongside. Toggle lives in the list toolbar (#walletToggleBtn).
+     ================================================================== */
+  .wlt-detail-head { display:none; padding:6px 0 0; }
+  .wlt-detail-head.wlt-show { display:block; }
+
+  /* Cards are a fixed physical object, not a fluid block — same width whether the
+     viewport is a phone or a 1080px-wide laptop main. --wlt-card-sh is a plain dark
+     shadow (no double-shade highlight) for cards sitting directly on other cards in
+     the stack, where a light top-left highlight has nothing real to bounce off of and
+     just reads as a stray white line; --sh-lg (the real highlight+shadow token) is
+     reserved for the hero card once it's alone on the page background. */
+  /* 380x224 is close to real ISO card proportions (~1.6:1) — the earlier 440x174
+     (~2.5:1) was a banner, not a card, which is what actually read as "wrong size"
+     on both a wide laptop main and a narrow phone. */
+.wlt-stack-wrap {
+    position: relative;
+    padding: 4px 0 0;
+    max-width: 360px;
+    margin: 0 auto;
+    --wlt-card-sh: 0 10px 22px rgba(11,26,36,.28), 0 2px 6px rgba(11,26,36,.16);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+@media (hover: none) {
+    .wlt-stack-wrap {
+        --wlt-card-sh: 0 6px 12px rgba(11,26,36,.25); /* Simplified single shadow */
+    }
+}
+
+  /* Was tucked into the front card's own right edge as a vertical "bookmark tab" —
+     read fine as a concept but in practice it sat on top of real card content (the
+     right edge crosses straight through each skin's own middle decoration), and its
+     `top` value was computed in .wlt-stack's coordinate space while this element is
+     actually positioned relative to .wlt-stack-wrap, which offsets it by .wlt-stack's
+     own 26px margin-top + the wrap's 4px padding — 30px higher than intended, making
+     the overlap worse. Moved below the front card entirely instead, in the bleed
+     margin that's already reserved empty space there — guaranteed not to sit on the
+     card regardless of skin, and no coordinate-space mismatch to get wrong. */
+  /* Side cue: a slim vertical pill in the 34px lane the cards leave on the inline-end edge (right
+     in LTR, left in RTL). It used to sit under the stack and cost ~40px of height on every phone. */
+  .wlt-scroll-rail { position:absolute; inset-inline-end:0; width:30px; height:92px; padding:8px 0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--card-surface); color:var(--muted); border-radius:var(--radius-pill); box-shadow:var(--sh-pressed); z-index:3; pointer-events:none; }
+  .wlt-scroll-rail svg { width:13px; height:13px; flex-shrink:0; animation:wltRailBob 2.2s ease-in-out infinite; }
+  .wlt-scroll-rail span { writing-mode:vertical-rl; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+  @keyframes wltRailBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(3px); } }
+  @media (prefers-reduced-motion: reduce) { .wlt-scroll-rail svg { animation:none; } }
+  /* overflow:hidden is load-bearing, not cosmetic — off-window cards park at top:480px
+     (exiting, below the stage) or top:-160px (queued, above it), and without clipping
+     here those unclipped positions genuinely extend this element's box, which extends
+     the page's own scrollHeight — the "extra room to scroll" bug: advancing the window
+     once measurably grew document.documentElement.scrollHeight by 83px in testing.
+     BUT clipping flush at the card's own left/right:0 edge cuts every card's natural
+     shadow bleed and hover-lift dead straight — visible as a hard rectangular line
+     through the rounded corner instead of the shadow fading out naturally. The
+     negative-margin + matching-padding pair below is the standard fix: it expands
+     this element's own box (and therefore where overflow:hidden actually clips) by
+     28px on each side, while the cards inside — still left:0;right:0 — land in exactly
+     the same visual position as before, since the padding pushes the containing block
+     back in by the same amount the margin pushed the border box out. */
+  /* padding is deliberately NOT used here to inset children — .wlt-stack's only
+     children are absolutely-positioned cards, and padding does nothing for those (see
+     .wlt-card's own comment). The negative margin alone is what makes this box wider
+     than its wrap for bleed-room purposes; the cards inset themselves explicitly. */
+  /* touch-action:none was only ever declared on .wlt-stack-wrap (the parent) — correct
+     per spec, since the used value is the intersection across the ancestor chain, but
+     the pointer handlers actually attach to THIS element (#wltStack), and real-device
+     reports (native swipe-down/pull-to-refresh eating the "back to first card" gesture,
+     while swipe-up worked fine — the classic scrollTop:0 overscroll signature) suggest
+     it wasn't reliably honored two levels up on every mobile engine. Declaring it again
+     directly on the actual touched node removes that ambiguity instead of trusting
+     inheritance. overscroll-behavior-y is redundant with html/body's own contain given
+     touch-action:none should stop a native gesture from ever starting here at all, but
+     it's a free second layer of defense against exactly the same failure mode. */
+  .wlt-stack { position:relative; margin:14px -40px 0; overflow:hidden; transition:height .4s var(--ease-glide); cursor:grab; touch-action:none; overscroll-behavior-y:contain; }
+  /* The 26px margin-top exists to clear the "Live · jump" pin above the stack in LIST
+     mode — that pin is hidden once a team is open (see the display:none rule below),
+     so the same margin just became dead space stacking on top of the already-trimmed
+     .wlt-detail-head padding, reported as "huge gap above the card." List view is
+     untouched; this only fires once #wltDetailHead has .wlt-show. */
+  #wltDetailHead.wlt-show ~ .wlt-stack-wrap .wlt-stack { margin-top:8px; }
+  .wlt-stack:active { cursor:grabbing; }
+
+  .wlt-live-pin { position:relative; z-index:5; display:flex; width:max-content; align-items:center; gap:6px; margin:10px auto 0; padding:6px 12px 6px 10px; border-radius:var(--radius-pill); border:1px solid color-mix(in srgb, var(--live) 35%, transparent); background:color-mix(in srgb, var(--live) 12%, var(--card-surface)); color:var(--live); font-family:var(--mono); font-size:var(--fs-xs); font-weight:700; letter-spacing:.6px; text-transform:uppercase; cursor:pointer; }
+  .wlt-live-pin-dot { width:6px; height:6px; border-radius:50%; background:var(--live); flex-shrink:0; animation:wltLivePinPulse 1.6s ease-in-out infinite; }
+  .wlt-live-pin-timer { font-variant-numeric:tabular-nums; padding-left:6px; margin-left:2px; border-left:1px solid color-mix(in srgb, var(--live) 40%, transparent); }
+  .wlt-live-pin.urgent .wlt-live-pin-timer { animation:urgenttext .6s ease-in-out infinite; }
+  #wltDetailHead.wlt-show ~ .wlt-live-pin { display:none; }
+  #wltDetailHead.wlt-show ~ .wlt-stack-wrap .wlt-scroll-rail { display:none; }
+  @keyframes wltLivePinPulse { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+
+  /* left/right:40px, not 0 — a positioned ancestor's `padding` does NOT inset an
+     absolutely-positioned child's left:0/right:0 (padding only affects normal-flow
+     content; left/right offsets are measured from the padding box's own outer edge,
+     which padding doesn't move). Relying on that was the actual horizontal-bleed bug:
+     the card was silently rendering 80px wider than intended, flush against .wlt-stack's
+     own (deliberately wider, for bleed room) edges, leaving zero space for its own
+     shadow — recreating the exact clipped-flush problem the bleed room was meant to
+     fix, just on the sides instead of top/bottom. Explicit 40px offsets (matching
+     .wlt-stack's own padding/margin bleed amount) give the card back its real width
+     while leaving genuine empty space around it inside the clip boundary. */
+  .wlt-card {
+    /* Stack paging used to animate `top`, a layout property — every swipe forced the
+       browser to run synchronous layout on every affected card, which is fine on a
+       desktop dev machine but was the real source of the reported phone-only lag.
+       `top:0` is now a fixed anchor; wltLayoutStack drives the actual per-slot position
+       through the --wlt-y/--wlt-s custom properties below instead, so paging only ever
+       animates `transform` — compositor-only, no layout, no main-thread reflow. */
+    position:absolute; top:0; inset-inline-start:40px; inset-inline-end:74px; height:235px; contain:layout paint; border-radius:20px; padding:18px 20px; color:#fff;
+    box-shadow:var(--wlt-card-sh); cursor:pointer; overflow:hidden; background:var(--wlt-skin-bg);
+    display:flex; flex-direction:column; justify-content:space-between;
+    --wlt-y:0px; --wlt-s:1;
+    transform:translateY(var(--wlt-y)) scale(var(--wlt-s));
+    transition:transform .46s var(--ease-glide), opacity .4s ease, box-shadow .25s, filter .25s, inset-inline-end .4s var(--ease-glide);
+  }
+  .wlt-card.wlt-exit-down {
+    /* Reads the same --wlt-y the card already had (never cleared, so no positional
+       snap) and adds the fly-off distance on top of it — a %-based distance only
+       guarantees clearing the card's own height, not the viewport, so 130vh is added
+       explicitly to clear any real viewport regardless of where the card started. */
+    --wlt-s:.96;
+    transition:transform .5s var(--ease-glide), opacity .22s ease .32s;
+    transform:translateY(calc(var(--wlt-y) + 130vh)) scale(var(--wlt-s)); opacity:0; pointer-events:none; box-shadow:none;
+  }
+  .wlt-card.wlt-gone { height:0 !important; margin:0 !important; box-shadow:none; pointer-events:none; }
+  .wlt-card.wlt-hero { inset-inline-end:40px; box-shadow:var(--sh-lg); cursor:default; transition:top .46s var(--ease-glide), transform .2s ease-out, box-shadow .25s; }
+  /* cursor-tracking gloss, lifted from the Arc-card reference — sits above every
+     other layer so the highlight reads as light on glass, not a flat color patch */
+  .wlt-sheen { position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .25s ease; z-index:3; border-radius:inherit; }
+  /* hover:hover + pointer:fine only — a touchscreen has no real hover, and mobile
+     browsers fake it by "sticking" :hover after a tap until the next tap elsewhere.
+     Without this gate, tapping a card to open it triggered a lift/brighten that
+     visually looked like an unwanted pop, and the stuck state fought scrolling.
+     transform here MUST compose with --wlt-y/--wlt-s (the base rule's position/scale,
+     set per-slot by wltLayoutStack) via calc() rather than replace them outright — a
+     bare `translateY(-2px)` overwrites the card's entire stack position and scale,
+     which is what made hover/press look like the card was popping to a different
+     card entirely instead of just lifting slightly in place. */
+  @media (hover:hover) and (pointer:fine) {
+    .wlt-card:not(.wlt-hero):not(.wlt-exit-down):hover { transform:translateY(calc(var(--wlt-y) - 3px)) scale(var(--wlt-s)); filter:brightness(1.02); box-shadow:var(--wlt-card-sh), 0 10px 18px rgba(11,26,36,.16); }
+  }
+  .wlt-card:not(.wlt-hero):not(.wlt-exit-down):active { transform:translateY(calc(var(--wlt-y) - 2px)) scale(calc(var(--wlt-s) * .985)); filter:brightness(.98); }
+  /* Dormant, not broken: desaturated and dimmed rather than a heavy grayscale filter —
+     reads as "sealed in its sleeve, not yet activated" rather than "this card errored." */
+  .wlt-card.wlt-locked { cursor:not-allowed; box-shadow:var(--wlt-card-sh), inset 0 0 0 999px rgba(34,40,46,.32); }
+
+  /* direction:ltr is deliberate and physical, not a language mistake — a real card's
+     chip doesn't move to the other side when you switch the app to Arabic, so this row
+     is pinned LTR regardless of page direction (same technique used on the wheel
+     picker earlier). Only .wlt-top itself needs this; its text content still reads
+     in whatever script it's actually written in. */
+  .wlt-top { display:flex; align-items:center; gap:10px; position:relative; z-index:1; direction:ltr; }
+  .wlt-top-text { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .wlt-issuer { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:1.8px; opacity:.85; }
+  /* A fixed-height, single-line lane owned by the status tags: they can never wrap down into
+     the chip / mid art, and never grow tall enough to be sliced off by the next card in the
+     stack (only the top ~96px of a stacked card is visible). direction:ltr like the rest of
+     the card face, so tags stay on the physical left under the name in both languages. */
+  .wlt-head { position:relative; z-index:1; flex-shrink:0; }
+  .wlt-tags-row { position:relative; z-index:1; margin-top:5px; height:20px; display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow:hidden; direction:ltr; }
+  .wlt-tags-row > * { flex-shrink:0; white-space:nowrap; }
+  .wlt-tags-multi .wlt-scored-tag { padding:4px 6px; }
+  .wlt-tags-multi .wlt-scored-tag .wlt-tag-txt { display:none; }
+  /* Foil-stamped, not stuck on: a metallic gold seal echoing the chip's own material
+     instead of a generic white UI pill — the live marker now reads as part of the
+     card's own manufacture, the way a hologram or foil seal is part of a real card. */
+  .wlt-live-seal { font-family:var(--sans); font-size:var(--fs-2xs); font-weight:700; letter-spacing:.3px; color:#3D2E05; background:linear-gradient(135deg,#F7E7B4,#D4AF37 55%,#B8860B); padding:3px 10px 3px 8px; border-radius:var(--radius-pill); display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 6px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5); }
+  .wlt-live-seal .dot-static { width:5px; height:5px; border-radius:50%; background:#7A1E14; flex-shrink:0; }
+  /* Debossed, not a badge: a dashed, recessed outline (no fill) reads as a printed
+     placeholder mark waiting to be activated, echoing the locked card's own "sealed in
+     its sleeve" language instead of competing with the live seal's foil finish. */
+  .wlt-locked-tag { display:inline-flex; align-items:center; gap:5px; font-family:var(--sans); font-size:var(--fs-2xs); font-weight:600; letter-spacing:.2px; color:rgba(255,255,255,.75); background:none; border:1px dashed rgba(255,255,255,.35); padding:2px 9px 2px 7px; border-radius:var(--radius-pill); }
+  /* A small ink-stamp mark, not another foil seal — the one state every card can carry
+     regardless of live/locked, so a judge can tell what's left without opening each card. */
+  .wlt-scored-tag { display:inline-flex; align-items:center; gap:5px; font-family:var(--sans); font-size:var(--fs-2xs); font-weight:700; letter-spacing:.2px; color:#fff; background:color-mix(in srgb, var(--success) 55%, transparent); padding:3px 9px 3px 7px; border-radius:var(--radius-pill); }
+  .wlt-mark { opacity:.92; flex-shrink:0; width:auto; display:block; filter:brightness(0) invert(1); }
+  /* the name is the one thing that has to read in the collapsed sliver, so it leads
+     every skin's top zone and always gets first claim on the available width */
+  .wlt-name { font-size:19px; font-weight:800; letter-spacing:-.3px; position:relative; z-index:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* category + stage: quiet fine-print, not a second shouting label — a plain sans at
+     reduced weight/opacity so the name is the only thing at full volume in this zone. */
+  .wlt-meta { font-family:var(--sans); font-size:var(--fs-xs); font-weight:500; letter-spacing:normal; text-transform:none; opacity:.65; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; position:relative; z-index:1; }
+  /* direction:ltr for the same reason as .wlt-top — the powered-by mark is printed in
+     a fixed spot on the card stock, bottom-right, and doesn't swap sides depending on
+     which language the app happens to be showing. */
+  .wlt-bottom-row { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; position:relative; z-index:1; direction:ltr; min-width:0; }
+  .wlt-num { flex-shrink:0; }
+  /* Engraved: dim, low-opacity mark + a light-below/dark-above text-shadow pair reads
+     as pressed into the card surface rather than printed on top of it. Same treatment
+     now shared by the card number below, so the two bottom-row marks read as one
+     manufacturing pass instead of two unrelated pieces of text. */
+  .wlt-powered-row { display:flex; align-items:center; gap:6px; color:rgba(255,255,255,.42); filter:drop-shadow(0 1px 0 rgba(255,255,255,.1)) drop-shadow(0 -1px 0 rgba(0,0,0,.3)); min-width:0; flex:0 1 auto; justify-content:flex-end; }
+  .wlt-powered-row svg { flex-shrink:0; display:block; }
+  .wlt-gc-mark { flex-shrink:0; display:block; width:auto; filter:brightness(0) invert(1); opacity:.78; }
+  .wlt-powered-row span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--mono); font-size:var(--fs-3xs); font-weight:700; letter-spacing:.5px; text-transform:uppercase; line-height:1.25; }
+
+  /* -------- shared "real card kit": every skin uses the same chip + numeral face --------
+     Gold, not silver — a warmer, more "this is a real premium card" material. Floats
+     independently now, not stamped into the header row: real cards keep the chip lower
+     and closer to the middle, .wlt-chip-float pins it there at a fixed spot on every
+     card regardless of skin, above whatever decorative mid-content that skin has. */
+  .wlt-chip-float { position:absolute; left:20px; top:106px; z-index:2; }
+  html[dir="rtl"] .wlt-chip-float { left:auto; right:22px; }
+  /* A real EMV chip reads as a grid of distinct beveled gold pads, not a flat
+     rectangle with a couple of thin divider lines — that flat-plus-lines version is
+     what read as "too simple" on a real card. Six individually-shaded pads with their
+     own inset highlight/shadow gives each one actual depth instead of a printed grid.
+     A second, thinner diagonal sweep layered over the pad grid (the ::after below) is
+     what makes the whole chip catch light as one plate rather than reading as six flat
+     stickers arranged in a grid. */
+  .wlt-chip { width:38px; height:28px; border-radius:5px; position:relative; flex-shrink:0; box-sizing:border-box;
+    display:grid; grid-template-columns:1.3fr 1fr 1fr; grid-template-rows:1fr 1fr; gap:1.5px; padding:3px;
+    background:linear-gradient(135deg,#F7E7B4,#D4AF37 45%,#F3DFA0 70%,#B8860B); box-shadow:0 2px 4px rgba(0,0,0,.35), inset 0 0 0 1px rgba(120,84,10,.4); }
+  .wlt-chip::after { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.34) 48%, transparent 62%); }
+  .wlt-chip-pad { border-radius:1.5px; background:linear-gradient(135deg, rgba(255,255,255,.6), rgba(184,134,11,.5) 55%, rgba(0,0,0,.18)); box-shadow:inset 0 0 0 1px rgba(0,0,0,.15); }
+  .wlt-chip-pad:first-child { grid-row:1 / 3; }
+  .wlt-num { font-family:'Martian Mono', var(--mono); font-size:13px; letter-spacing:2px; opacity:.9; position:relative; z-index:1; color:rgba(255,255,255,.92); filter:drop-shadow(0 1px 0 rgba(255,255,255,.12)) drop-shadow(0 -1px 0 rgba(0,0,0,.35)); }
+
+  /* A little tooth on every card, all skins, not just the three that already had their
+     own texture — a very fine crosshatch sitting above the skin background but below
+     the real content (no explicit z-index, so it naturally loses to the z-index:1
+     content while still beating the plain background). */
+  .wlt-card::after { content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+    background-image:repeating-linear-gradient(115deg, rgba(255,255,255,.045) 0 1px, transparent 1px 4px), repeating-linear-gradient(25deg, rgba(0,0,0,.035) 0 1px, transparent 1px 5px); }
+
+  /* Every skin sets --wlt-skin-bg instead of background directly now — .wlt-card reads
+     it by default, and the live-card frame below borrows it too (see wlt-live-pop),
+     so the animated border technique works without needing a real wrapper element or
+     mask-composite (which is what silently degraded into "a glow" last round). */
+  /* -------- A: Flat + Shape (kept — the one liked as-is, plus a chip and a quiet
+     tone-on-tone geometric accent instead of empty space in the corner) -------- */
+  .wlt-skin-flat { --wlt-skin-bg: var(--tc); }
+  .wlt-skin-flat::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 5px); }
+  .wlt-flat-mid { display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; flex:1; margin:8px 0; }
+  .wlt-shape { width:64px; height:64px; opacity:.16; pointer-events:none; }
+  html[dir="rtl"] .wlt-flat-mid { flex-direction:row-reverse; }
+  html[dir="rtl"] .wlt-shape { transform:scaleX(-1); }
+
+  /* -------- B: Engraved Metal, centered (the eDamana one — kept centered on purpose,
+     top row standardized with the rest of the wardrobe now) -------- */
+  .wlt-skin-metal { --wlt-skin-bg: linear-gradient(160deg, color-mix(in srgb, var(--tc) 40%, #494f56), color-mix(in srgb, var(--tc) 24%, #22262a) 55%, color-mix(in srgb, var(--tc) 14%, #101214)); }
+  .wlt-skin-metal::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(98deg, rgba(255,255,255,.05) 0 2px, rgba(0,0,0,.04) 2px 4px); }
+  .wlt-metal-mid { text-align:center; position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; }
+
+  /* -------- C: Split Block, card-ified (hard diagonal cut, but now carrying the
+     same chip / issuer-row / number-row as the other two, so the cut reads as one
+     detail on a card rather than the whole identity of a poster) -------- */
+  /* A slight tonal gradient instead of a flat fill — two panes of the same color
+     family rather than one poster-flat block, so the cut reads as two pieces of card
+     stock joined rather than a shape drawn over a solid color. */
+  .wlt-skin-split { --wlt-skin-bg: linear-gradient(135deg, color-mix(in srgb, var(--tc) 92%, #fff 8%), var(--tc) 60%); }
+  .wlt-skin-split::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 5px); pointer-events:none; }
+  /* drop-shadow (not box-shadow) follows the clip-path's own visible silhouette, so the
+     seam between the two panes reads as a raised/lapped joint catching real light
+     rather than the hard poster-cutout edge a flat color-on-color cut used to read as. */
+  .wlt-split-cut { position:absolute; inset:0; background:linear-gradient(135deg, var(--navy-800), var(--navy-900) 65%); filter:drop-shadow(-2px 0 3px rgba(0,0,0,.35)) drop-shadow(1px 0 0 rgba(255,255,255,.08)); }
+  html[dir="rtl"] .wlt-split-cut { transform:scaleX(-1); }
+  .wlt-split-content { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
+
+  .wlt-skin-ribbon { --wlt-skin-bg: linear-gradient(160deg, var(--navy-900), #0A1420 70%); }
+  /* Woven, not painted: a fine cross-thread texture plus a highlight/shadow edge pair
+     along both long sides gives the band real cloth thickness instead of a flat color
+     bar laid on top of the card. */
+  .wlt-ribbon-band { position:absolute; left:-15%; right:-15%; top:56%; height:40px; background:linear-gradient(180deg, color-mix(in srgb, var(--tc) 92%, #fff 8%) 0%, var(--tc) 45%, color-mix(in srgb, var(--tc) 85%, #000 15%) 100%); transform:rotate(-7deg); box-shadow:0 5px 12px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(0,0,0,.25); pointer-events:none; }
+  .wlt-ribbon-band::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 1px, transparent 1px 3px), repeating-linear-gradient(0deg, rgba(0,0,0,.06) 0 1px, transparent 1px 3px); }
+  html[dir="rtl"] .wlt-ribbon-band { transform:rotate(7deg); }
+
+  /* -------- E: Frosted — the Apple-direction skin: a soft glass sheen swoosh over a
+     tonal gradient of the team color, rather than a flat fill or a hard material cut.
+     Reads as backlit glass to match the header/sheet chrome elsewhere in the app. -------- */
+  .wlt-skin-frost { --wlt-skin-bg: linear-gradient(155deg, color-mix(in srgb, var(--tc) 75%, #fff 25%), color-mix(in srgb, var(--tc) 87%, #000 13%) 75%); }
+  .wlt-skin-frost::before { content:''; position:absolute; inset:-20% -40%; background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.32) 46%, rgba(255,255,255,.06) 58%, transparent 68%); transform:rotate(-6deg); pointer-events:none; }
+  .wlt-frost-mid { flex:1; display:flex; align-items:center; justify-content:flex-end; position:relative; z-index:1; margin:8px 0; }
+  .wlt-frost-mid svg { opacity:.5; }
+  html[dir="rtl"] .wlt-frost-mid { justify-content:flex-start; }
+
+  /* -------- Live card: a real animated border -------- */
+  /* No more --sh-lg here — its white highlight read as a stray drop-shadow on the one
+     card that's supposed to look different on purpose. Plain dark card shadow + a red
+     glow carries it now, and the ring below does the actual distinguishing.
+     Take 2 on the border technique — the first attempt made .wlt-card's OWN background
+     the animated gradient, which visibly produced a faint rectangular seam at the
+     rounded corners in real testing: an element that's overflow:hidden + border-radius
+     + has a `background` repainting every frame (conic-gradient angle change is a
+     paint, not a compositor-only op) is exactly the combination Chrome's rounded-rect
+     clipping doesn't always anti-alias cleanly. Fix: never touch .wlt-card's own
+     background at all. This ring is a completely separate child, inset safely WITHIN
+     the card's existing bounds (so it never needs to escape overflow:hidden), and the
+     "hole" in the middle is real mask-composite this time — WITH the plain unprefixed
+     `mask` alongside `-webkit-mask` (the previous round left that out, which is why it
+     silently degraded into a diffuse glow instead of a crisp edge). */
+  .wlt-card.wlt-live-pop { box-shadow:var(--wlt-card-sh), 0 18px 36px color-mix(in srgb, var(--live) 40%, transparent); }
+  /* The ring SHAPE (the masked rounded-rect band) stays completely fixed — only the
+     gradient fill inside it moves, and it moves via `transform: rotate()` on an
+     oversized child rather than by animating the conic-gradient's own angle custom
+     property. The old approach repainted the gradient itself every frame (the exact
+     cost the comment above already flagged); rotating a plain filled square is
+     compositor-only, effectively free, and looks identical from the outside — the
+     card content isn't touched either way. */
+  .wlt-live-ring {
+    position:absolute; inset:2px; border-radius:20px; padding:4px; z-index:2; pointer-events:none;
+    overflow:hidden;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+  }
+  .wlt-live-ring-spin {
+    position:absolute; inset:-60%;
+    background: conic-gradient(from 0deg, var(--live), color-mix(in srgb, var(--jo-blue) 65%, var(--live)) 22%, transparent 45%, transparent 72%, var(--live));
+    animation: wltRingSpin 4.5s linear infinite;
+    will-change: transform;
+  }
+  @keyframes wltRingSpin { to { transform: rotate(360deg); } }
+
+  /* About lives off the card now, not engraved into a paragraph on it — real cards
+     never carry a bio, and this is also what let the card stop growing on open. */
+  .wlt-about-panel { margin:0 0 16px; background:var(--surface-sunken); border-radius:var(--radius-md); padding:14px 16px; }
+  .wlt-about-l { font-size:var(--fs-2xs); font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted-soft); margin-bottom:5px; }
+  .wlt-about-v { font-size:var(--fs-sm); color:var(--muted); line-height:1.55; }
+
+  .wlt-detail-extra { opacity:0; transform:translateY(26px); transition:opacity .28s ease .05s, transform .34s var(--ease-glide); margin-top:18px; }
+  .wlt-detail-extra.wlt-show { opacity:1; transform:translateY(0); }
+
+  .wlt-bal { position:relative; padding:2px 2px 18px; }
+  .wlt-bal-label { font-family:var(--mono); font-size:var(--fs-3xs); letter-spacing:1.8px; text-transform:uppercase; color:var(--muted-soft); }
+  .wlt-bal-num { font-family:var(--mono); font-size:var(--fs-4xl); font-weight:700; font-variant-numeric:tabular-nums; color:var(--text); margin-top:2px; }
+  .wlt-bal-num span { font-size:var(--fs-md); color:var(--muted-soft); font-weight:600; }
+  .wlt-bal-progress { height:4px; border-radius:3px; background:var(--surface-sunken); margin-top:10px; overflow:hidden; max-width:200px; }
+  .wlt-bal-fill { width:100%; height:100%; background:var(--acc); border-radius:3px; transform-origin:left; transition:transform .35s var(--ease-glide); }
+  .wlt-bal-sub { font-size:12px; color:var(--muted-soft); margin-top:7px; }
+  .wlt-float-plus { position:absolute; right:0; top:0; font-family:var(--mono); font-weight:700; font-size:13px; color:var(--success); animation:wltFloatUp .75s ease forwards; pointer-events:none; }
+  html[dir="rtl"] .wlt-float-plus { right:auto; left:0; }
+  @keyframes wltFloatUp { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-20px); } }
+
+  .wlt-stmt-label { font-size:var(--fs-2xs); font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted-soft); margin:0 2px 8px; }
+  .wlt-stmt-drawer { background:var(--card-surface); border-radius:var(--radius-lg); box-shadow:var(--sh-sm); overflow:hidden; margin-bottom:14px; }
+  .wlt-stmt-row { position:relative; display:flex; align-items:center; gap:12px; padding:13px 16px; cursor:pointer; transition:background .1s; }
+  .wlt-stmt-row:active { background:var(--surface-sunken); }
+  .wlt-stmt-row:not(:last-child)::after { content:''; position:absolute; left:16px; right:16px; bottom:0; height:1px; background:var(--border-c); }
+  .wlt-stmt-row.wlt-warn { animation:wltShake .35s; }
+  @keyframes wltShake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-4px); } 75% { transform:translateX(4px); } }
+  .wlt-stmt-row.wlt-disabled { cursor:default; opacity:.6; }
+  .wlt-stmt-icon { color:var(--muted-soft); flex-shrink:0; display:flex; }
+  .wlt-stmt-row.wlt-answered .wlt-stmt-icon { color:var(--success); }
+  .wlt-stmt-body { flex:1; min-width:0; }
+  .wlt-stmt-name { font-weight:700; font-size:var(--fs-base); }
+  .wlt-stmt-weight { font-size:var(--fs-xs); color:var(--muted-soft); margin-top:1px; }
+  .wlt-stmt-val { font-family:var(--mono); font-weight:700; font-size:var(--fs-sm); color:var(--success); flex-shrink:0; }
+  .wlt-stmt-chevron { color:var(--muted-soft); flex-shrink:0; }
+  html[dir="rtl"] .wlt-stmt-chevron svg { transform:scaleX(-1); }
+
+  .wlt-lock-row { display:flex; justify-content:flex-end; margin-bottom:10px; }
+
+  /* Inline expansion — replaces the old fixed bottom-sheet modal. It's just another
+     block inside the same drawer surface, directly under the row you tapped: one
+     surface to read instead of two, and nothing to dismiss. */
+  .wlt-stmt-expand { padding:4px 18px 20px; background:var(--surface-sunken); animation:wltExpandIn .22s var(--ease-glide); }
+  @keyframes wltExpandIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+  .wlt-stmt-row.wlt-expanded { background:var(--surface-sunken); }
+  .wlt-stmt-row.wlt-expanded::after { display:none; }
+
+  /* Used to be native overflow-x:auto + scroll-snap, with touch-action:pan-x and a
+     mouse-only manual drag layered on top for desktop. That still broke on real phones
+     (reachable past ~7 only sometimes) even after the touch-action fix — relying on the
+     browser's own scroll+snap physics for touch turned out to be genuinely unreliable
+     here. Rebuilt on the exact same fully-custom pointer-drag model the card carousel
+     already proves solid on real devices (wltWireStackDrag): touch-action:none claims
+     the gesture outright instead of negotiating with native scrolling, and one pointer
+     handler drives every input type identically via a --wlt-wheel-x transform, so
+     there's no separate "native path" left for touch to fall into. */
+  .wlt-wheel-wrap { position:relative; height:96px; margin:6px 0 10px; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; cursor:grab; }
+  .wlt-wheel-wrap:active { cursor:grabbing; }
+  .wlt-wheel-highlight { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:60px; height:68px; border-radius:var(--radius-md); background:var(--card-surface); pointer-events:none; z-index:0; }
+  .wlt-wheel-track { position:relative; z-index:1; height:100%; display:flex; align-items:center; transform:translateX(var(--wlt-wheel-x, 0px)); transition:transform .28s var(--ease-glide); }
+  .wlt-wheel-spacer { flex:0 0 auto; }
+  .wlt-wheel-item { cursor:pointer; flex:0 0 auto; width:60px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:800; font-variant-numeric:tabular-nums; color:var(--muted-soft); }
+
+  .wlt-sheet-desc { font-size:var(--fs-sm); color:var(--muted); line-height:1.5; margin-bottom:4px; text-align:center; }
+  .wlt-sheet-weight { font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted-soft); margin-bottom:20px; text-align:center; }
+  .wlt-sheet-done { width:100%; padding:15px; border:none; border-radius:var(--radius-md); background:var(--acc); color:var(--acc-ink); font-weight:800; font-size:var(--fs-md); cursor:pointer; }
+  .wlt-sheet-done:disabled { opacity:.4; cursor:default; }
+
+  .wlt-confirm-burst { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.5); width:84px; height:84px; border-radius:50%; background:var(--success); display:flex; align-items:center; justify-content:center; z-index:80; opacity:0; pointer-events:none; }
+  .wlt-confirm-burst.wlt-play { animation:wltBurst .6s var(--ease-pop) forwards; }
+  @keyframes wltBurst { 0% { opacity:0; transform:translate(-50%,-50%) scale(.4); } 30% { opacity:1; transform:translate(-50%,-50%) scale(1.08); } 70% { opacity:1; transform:translate(-50%,-50%) scale(1); } 100% { opacity:0; transform:translate(-50%,-50%) scale(1); } }
+
+  /* Phones: the "compositor-only" rotation above isn't actually free when the spinning child
+     sits inside a masked + overflow:hidden parent — the mask has to be re-applied to the
+     rotated layer every frame, and the wide 36px live glow re-blurs alongside it. That was the
+     lag on real devices. Here the gradient is frozen (mask rasterizes once) and the ring
+     "breathes" via opacity on the whole ring layer instead, which really is compositor-only;
+     the glow shrinks too. Same red→blue strip identity, no per-frame mask work. */
+  @media (max-width:720px), (pointer:coarse) {
+    .wlt-live-ring-spin { animation:none; inset:0; background:conic-gradient(from 210deg, var(--live), color-mix(in srgb, var(--jo-blue) 65%, var(--live)) 25%, transparent 50%, transparent 72%, var(--live)); will-change:auto; }
+    .wlt-live-ring { will-change:opacity; animation:wltRingPulse 2.8s ease-in-out infinite; }
+    .wlt-card.wlt-live-pop { box-shadow:var(--wlt-card-sh), 0 8px 18px color-mix(in srgb, var(--live) 32%, transparent); }
+  }
+  @keyframes wltRingPulse { 0%,100% { opacity:.6; } 50% { opacity:1; } }
+  @media (prefers-reduced-motion: reduce) { .wlt-live-ring-spin, .wlt-live-ring { animation:none; } }
+
+/* ================= Hotfix pass: touch targets, mobile orb, reduced motion ================= */
+
+/* Tap targets: 44x44 minimum wherever a thumb is the pointer. Desktop mouse keeps the compact sizes. */
+@media (pointer:coarse), (max-width:720px) {
+  .icon-btn, .btn-circle { width:44px; height:44px; }
+  .num-row button { min-width:44px; width:44px; height:44px; }
+  .txt-btn, .langseg button, .admin-drawer-close { min-height:44px; }
+  .admin-drawer-close { min-width:44px; }
+}
+
+/* The mood orb was a fixed 340px element carrying filter:blur(100px) + will-change:filter — a
+   standing full-screen blur layer on phone GPUs for a purely decorative tint. On touch/small
+   screens the blur is replaced by a soft radial mask (rasterized once, no filter pass), and the
+   layout-property transitions (left/top) are dropped. */
+@media (max-width:720px), (pointer:coarse) {
+  .orb { filter:none; will-change:auto; -webkit-mask-image:radial-gradient(circle closest-side, #000 0, transparent 100%); mask-image:radial-gradient(circle closest-side, #000 0, transparent 100%); }
+  .orb-mood { width:300px; height:300px; transition:background 1s ease, opacity 1s ease; }
+}
+
+/* Reduced motion means gentler, not none: infinite/decorative loops stop, movement collapses to
+   short cross-fades so nothing hard-cuts. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-iteration-count:1 !important; animation-duration:.2s !important; scroll-behavior:auto !important; transition-duration:.18s !important; transition-delay:0s !important; }
+  .orb, .wlt-chip::after, .wlt-sheen, .lf-orbit, .skel { animation:none !important; }
+  .admin-drawer { transition:opacity .18s ease, transform .18s ease; }
+}
+
+/* Score outbox status: a persistent, non-blocking strip while any score has not reached the server. */
+.sync-banner { position:fixed; left:12px; right:12px; bottom:max(12px, env(safe-area-inset-bottom)); z-index:90; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; border-radius:var(--radius-md); background:color-mix(in srgb, var(--danger) 14%, var(--card-surface)); color:var(--text); box-shadow:var(--sh-lg); font-size:var(--fs-sm); font-weight:600; opacity:0; transform:translateY(12px); pointer-events:none; transition:opacity .25s ease, transform .3s var(--ease-glide); max-width:520px; margin-inline:auto; }
+.sync-banner.show { opacity:1; transform:none; pointer-events:auto; }
+.sync-retry { flex-shrink:0; min-height:44px; padding:0 16px; border:none; border-radius:var(--radius-pill); background:var(--acc); color:var(--acc-ink); font-weight:700; font-family:inherit; font-size:var(--fs-sm); cursor:pointer; }
+
+/* Phones: identity in the header is the mark + name only; the tagline / subtitle stack returns on larger screens. */
+@media (max-width:720px) { header .brand-sub-line { display:none; } }
+
+.offline-badge { position:fixed; left:50%; top:calc(env(safe-area-inset-top, 0px) + 8px); transform:translate(-50%,-140%); z-index:95; padding:8px 14px; border-radius:var(--radius-pill); background:var(--ink, #0B1A24); color:var(--bg, #fff); font-size:var(--fs-sm); font-weight:700; box-shadow:var(--sh-lg); max-width:calc(100% - 24px); text-align:center; transition:transform .3s var(--ease-glide); pointer-events:none; }
+.offline-badge.show { transform:translate(-50%,0); }
