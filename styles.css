@@ -1055,3 +1055,7 @@
 
 .offline-badge { position:fixed; left:50%; top:calc(env(safe-area-inset-top, 0px) + 8px); transform:translate(-50%,-140%); z-index:95; padding:8px 14px; border-radius:var(--radius-pill); background:var(--ink, #0B1A24); color:var(--bg, #fff); font-size:var(--fs-sm); font-weight:700; box-shadow:var(--sh-lg); max-width:calc(100% - 24px); text-align:center; transition:transform .3s var(--ease-glide); pointer-events:none; }
 .offline-badge.show { transform:translate(-50%,0); }
+
+.env-notice { margin-top:14px; padding:12px 14px; border-radius:var(--radius-md); background:var(--surface-sunken); font-size:var(--fs-sm); text-align:start; display:grid; gap:10px; }
+.env-notice p { margin:0; }
+.gate-card .env-btn { width:auto; min-height:44px; padding:0 18px; background:var(--card-surface); color:var(--text); box-shadow:var(--sh-sm); justify-self:start; font-size:var(--fs-sm); }

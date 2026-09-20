@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "JO Fintech Festival Judging Portal",
+  "short_name": "JO Judge",
+  "description": "Live scoring for the JO Fintech Festival judges.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B1A24",
+  "theme_color": "#0B1A24",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

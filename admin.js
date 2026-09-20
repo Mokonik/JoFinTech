@@ -1,7 +1,7 @@
 /* Admin panel: loaded on demand (see loadAdminModule in app.js). Judges who never open Admin never download or parse this file. */
 /* ---------------- Admin ---------------- */
 
-async function drawAdmin(){
+async function drawAdminPanel(){
   if (!$('adminSummary').children.length) $('adminSummary').innerHTML = Array.from({length:5}).map(() => `<div class="skel skel-stat"></div>`).join('');
   renderAdminLiveBanner();
   drawAdminJudges();

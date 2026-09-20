@@ -5,7 +5,7 @@ const I18N = {
         myNoScores:'You have not scored any team yet.', locked:'Locked — not the live team',
         gateSub:'Enter your judge code to continue', signInBtn:'Sign in', codeNotRecognized:'Code not recognized.',
         restricted:'restricted', doneBtn:'Done', soFar:'so far', partial:'(partial)', noMatches:'No matches.',
-        saveConnErr:'Could not save — check your connection and try again.', noConnection:'No connection — check your internet and try again.', offlineShowing:'Offline — showing your last saved data',  syncWaiting:'Not sent yet — waiting to upload:', syncRetry:'Retry now', syncOffline:'You are offline. Your scores are kept on this device.', tooManyAttempts:'Too many attempts — wait a moment and try again.', annOneMin:'One minute left', annTenSec:'Ten seconds left', annTimeUp:"Time's up", annNowLive:'Now live: ', teamInfo:'About this team',
+        saveConnErr:'Could not save — check your connection and try again.', noConnection:'No connection — check your internet and try again.', inAppNotice:'This looks like an in-app browser (WhatsApp, Instagram, etc.). For smooth scoring, open this page in Chrome or Safari.', copyLink:'Copy link', linkCopied:'Link copied — paste it in Chrome or Safari', installApp:'Install app', iosInstallTip:'Tip: tap Share, then Add to Home Screen, to score full-screen.', offlineShowing:'Offline — showing your last saved data',  syncWaiting:'Not sent yet — waiting to upload:', syncRetry:'Retry now', syncOffline:'You are offline. Your scores are kept on this device.', tooManyAttempts:'Too many attempts — wait a moment and try again.', annOneMin:'One minute left', annTenSec:'Ten seconds left', annTimeUp:"Time's up", annNowLive:'Now live: ', teamInfo:'About this team',
         autosaveNote:'scored — saves automatically',
         scoreLiveNow:'Score this team', otherTeams:'Other teams',
         progressLabel:'criteria scored', emptyMyScores:'You haven\'t scored any team yet.', goScore:'Go to Score',
@@ -23,7 +23,7 @@ const I18N = {
         myNoScores:'لم تقم بتقييم أي فريق بعد.', locked:'مقفل — ليس الفريق المباشر الآن',
         gateSub:'أدخل رمز المحكّم للمتابعة', signInBtn:'تسجيل الدخول', codeNotRecognized:'الرمز غير معروف.',
         restricted:'مقيّد', doneBtn:'تم', soFar:'حتى الآن', partial:'(جزئي)', noMatches:'لا توجد نتائج مطابقة.',
-        saveConnErr:'تعذر الحفظ — يرجى التحقق من الاتصال والمحاولة مرة أخرى.', noConnection:'لا يوجد اتصال — تحقق من الإنترنت وحاول مجدداً.', offlineShowing:'غير متصل — تُعرض آخر بياناتك المحفوظة',  syncWaiting:'لم يُرسل بعد — بانتظار الرفع:', syncRetry:'أعد المحاولة الآن', syncOffline:'أنت غير متصل. درجاتك محفوظة على هذا الجهاز.', tooManyAttempts:'محاولات كثيرة — انتظر قليلاً ثم حاول مجدداً.', annOneMin:'بقيت دقيقة واحدة', annTenSec:'بقيت عشر ثوانٍ', annTimeUp:'انتهى الوقت', annNowLive:'مباشر الآن: ', teamInfo:'عن هذا الفريق',
+        saveConnErr:'تعذر الحفظ — يرجى التحقق من الاتصال والمحاولة مرة أخرى.', noConnection:'لا يوجد اتصال — تحقق من الإنترنت وحاول مجدداً.', inAppNotice:'يبدو أنك تستخدم متصفحاً داخل تطبيق (واتساب، إنستغرام...). لتجربة أسلس افتح هذه الصفحة في Chrome أو Safari.', copyLink:'نسخ الرابط', linkCopied:'تم نسخ الرابط — الصقه في Chrome أو Safari', installApp:'تثبيت التطبيق', iosInstallTip:'نصيحة: اضغط مشاركة ثم إضافة إلى الشاشة الرئيسية للتقييم بملء الشاشة.', offlineShowing:'غير متصل — تُعرض آخر بياناتك المحفوظة',  syncWaiting:'لم يُرسل بعد — بانتظار الرفع:', syncRetry:'أعد المحاولة الآن', syncOffline:'أنت غير متصل. درجاتك محفوظة على هذا الجهاز.', tooManyAttempts:'محاولات كثيرة — انتظر قليلاً ثم حاول مجدداً.', annOneMin:'بقيت دقيقة واحدة', annTenSec:'بقيت عشر ثوانٍ', annTimeUp:'انتهى الوقت', annNowLive:'مباشر الآن: ', teamInfo:'عن هذا الفريق',
         autosaveNote:'تم التقييم — يُحفظ تلقائياً',
         scoreLiveNow:'قيّم هذا الفريق', otherTeams:'الفرق الأخرى',
         progressLabel:'معايير تم تقييمها', emptyMyScores:'لم تقم بتقييم أي فريق بعد.', goScore:'الذهاب إلى التقييم',
@@ -47,6 +47,7 @@ function applyLang(){
   document.getElementById('logout').textContent = t('signOut');
   document.getElementById('gateSub').textContent = t('gateSub');
   document.getElementById('signInBtn').textContent = t('signInBtn');
+  if (typeof renderEnvNotice === 'function') renderEnvNotice();
   document.getElementById('sessionConflictText').textContent = t('sessionConflict');
   document.querySelectorAll('#langSeg button').forEach(b => { b.classList.toggle('active', b.dataset.l === lang); b.setAttribute('aria-pressed', b.dataset.l === lang ? 'true' : 'false'); });
   document.getElementById('langSeg').classList.toggle('alt', lang === 'ar');
@@ -2132,8 +2133,7 @@ function renderMyScores(){
 
 /* ---------------- Admin (lazy) ----------------
    The admin panel lives in admin.js (~30% of the old app.js) and is fetched the first time an admin
-   opens the Admin tab. drawAdmin() below is only a loader stub: once admin.js runs, its own
-   drawAdmin() replaces this one on window. */
+   opens the Admin tab. drawAdmin() below loads it, then calls drawAdminPanel() from admin.js. */
 let allTeamsCache = [], allScoresCache = [];
 let adminModulePromise = null;
 function loadAdminModule(){
@@ -2148,7 +2148,7 @@ function loadAdminModule(){
 }
 async function drawAdmin(){
   try { await loadAdminModule(); } catch (e) { showToast(t('noConnection')); return; }
-  if (window.drawAdmin && window.drawAdmin !== drawAdmin) return window.drawAdmin();
+  return drawAdminPanel();   // defined by admin.js
 }
 
 const saved = sessionStorage.getItem('judgeCode');
@@ -2159,3 +2159,31 @@ applyLang();
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
+
+/* ---------- environment notice on the sign-in screen ----------
+   In-app browsers (links opened inside WhatsApp / Instagram / Facebook) are the usual source of
+   "the page feels bugged": different scrolling, screen height and gesture handling. Detected by
+   heuristics (there is no perfect test) and answered with a nudge, never a block. Also offers
+   install-to-home-screen, which gives a full-screen app with no browser bars. */
+var deferredInstall = null;   // var, not let: renderEnvNotice() is reached from applyLang() before this line runs
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; renderEnvNotice(); });
+window.addEventListener('appinstalled', () => { deferredInstall = null; renderEnvNotice(); });
+function renderEnvNotice(){
+  const box = document.getElementById('envNotice');
+  if (!box) return;
+  const ua = navigator.userAgent || '';
+  const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  const ios = /iPhone|iPad|iPod/.test(ua);
+  const inApp = /FBAN|FBAV|Instagram|MicroMessenger|Snapchat|TikTok|Twitter|LinkedInApp|Line\//i.test(ua) || /; wv\)/.test(ua) || (ios && !/Safari\//.test(ua));
+  const parts = [];
+  if (inApp && !standalone) parts.push(`<p>${esc(t('inAppNotice'))}</p><button type="button" id="copyLinkBtn" class="env-btn">${esc(t('copyLink'))}</button>`);
+  else if (deferredInstall && !standalone) parts.push(`<button type="button" id="installBtn" class="env-btn">${esc(t('installApp'))}</button>`);
+  else if (ios && !standalone) parts.push(`<p>${esc(t('iosInstallTip'))}</p>`);
+  box.innerHTML = parts.join('');
+  box.classList.toggle('hide', !parts.length);
+  const copy = document.getElementById('copyLinkBtn');
+  if (copy) copy.onclick = async () => { try { await navigator.clipboard.writeText(location.href); } catch (e) {} showToast(t('linkCopied')); };
+  const inst = document.getElementById('installBtn');
+  if (inst) inst.onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch (e) {} deferredInstall = null; renderEnvNotice(); };
+}
+renderEnvNotice();
